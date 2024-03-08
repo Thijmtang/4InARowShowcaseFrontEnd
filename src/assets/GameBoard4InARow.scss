@@ -26,7 +26,10 @@
             height: 100%;
             border-radius: 100%;
             position: relative;
+
             &::after{
+                cursor: pointer;
+
                 top: 0;
                 left: 0;
 
@@ -44,12 +47,14 @@
 
             &.player-1{
                 &::after {
+                    cursor: default;
                     background-color: #FFC107;
                 }
             }
 
             &.player-2{
                 &::after {
+                    cursor: default;
                     background-color: #DC3545;
                 }
             }

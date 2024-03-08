@@ -1,6 +1,6 @@
 import React from 'react'
 import Badge from 'react-bootstrap/Badge';
-import { PlayerTypes } from '../enums/PlayerTypes';
+import { PlayerTypes } from '../../enums/PlayerTypes';
 
 interface Props {
     children: React.ReactNode;

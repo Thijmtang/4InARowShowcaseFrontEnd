@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './assets/App.scss';
-import GameBoard4InARow from './components/GameBoard4InARow';
+import GameBoard4InARow from './components/4InARow/GameBoard4InARow';
 
 interface Forecast {
     date: string;
@@ -10,6 +10,7 @@ interface Forecast {
 }
 
 function App() {
+    // populateWeatherData();
     // const [forecasts, setForecasts] = useState<Forecast[]>();
 
     // useEffect(() => {
@@ -32,7 +33,7 @@ function App() {
     //                 <tr key={forecast.date}>
     //                     <td>{forecast.date}</td>
     //                     <td>{forecast.temperatureC}</td>
-    //                     <td>{forecast.temperatureF}</td>
+    //                    <td>{forecast.temperatureF}</td>
     //                     <td>{forecast.summary}</td>
     //                 </tr>
     //             )}
@@ -48,11 +49,7 @@ function App() {
         // </div>
     );
 
-    async function populateWeatherData() {
-        // const response = await fetch('weatherforecast');
-        // const data = await response.json();
-        // setForecasts(data);
-    }
+
 }
 
 export default App;
