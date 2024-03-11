@@ -1,28 +1,32 @@
-import '../../assets/GameBoard4InARow.scss';
+import '../assets/GameBoard4InARow.scss';
+
 
 import React, { useEffect, useState } from 'react'
-import GameBoardCell from '../4InARow/GameBoardCell';
-import PlayerBadge from './PlayerBadge';
-import {Player} from '../../interfaces/Player';
-import { BoardCell } from '../../interfaces/BoardCell';
+import GameBoardCell from '../components/4InARow/GameBoardCell';
+import PlayerBadge from '../components/4InARow/PlayerBadge';
+import {Player} from '../lib/interfaces/Player';
+import { BoardCell } from '../lib/interfaces/BoardCell';
+import { toast } from 'react-toastify';
+import { useAuth } from '../lib/context/AuthContext';
 
 
 function GameBoard4InARow() {
+  const { user, isLoggedIn} = useAuth();
+  console.log(user, isLoggedIn);
+  
   // @todo update realtime
   const [currentPlayer, setCurrentPlayer] = useState<Player>({playerNumber: 1, username: "Speler"});
 
   const [field, setField] = useState<BoardCell[]>();
 
-
   useEffect(() => {
     getGameField();
   }, []);
 
-
   const rows: JSX.Element[] = [];
   
   field?.forEach((column, i) => {
-    let animation = column?.new === true;
+    const animation = column?.new === true;
     rows.push(<GameBoardCell key={i}  animation={animation} cell={column} updateField={setField}/>);
   });
 
@@ -48,12 +52,9 @@ function GameBoard4InARow() {
  
   );
 
-
-  
 async function getGameField() {
   const response = await fetch('weatherforecast');
   const data = await response.json();
-
   setField(data);}
 }
 

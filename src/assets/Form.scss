@@ -1,0 +1,14 @@
+.form-container {
+    background-color: #F6F6F6;
+    border-radius: 5px;
+    padding: 10px;
+    .footer {
+        margin-top: 4vh;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        a{
+            width: fit-content;
+        }
+    }
+}

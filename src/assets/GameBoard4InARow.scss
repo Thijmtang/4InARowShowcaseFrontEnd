@@ -15,7 +15,7 @@
         grid-template-columns: repeat(8, 1fr);
         grid-template-rows: repeat(8, 1fr);
         justify-content: space-evenly;
-        gap: 10px;
+        gap: 5px;
         max-height: 754px;
         aspect-ratio: 1/1;
     
@@ -61,7 +61,7 @@
             &.new {
                 &::after{
                     // transition: .2s;
-                    animation: .5s drop ease-in-out;
+                    animation: .2s drop ease-in-out;
                     // background-color: purple!important;
                     
                 }
@@ -75,6 +75,6 @@
 
 
 @keyframes drop {
-    from {top: -500%;}
+    from {top: -800%;}
     to {top: 0;}
   }

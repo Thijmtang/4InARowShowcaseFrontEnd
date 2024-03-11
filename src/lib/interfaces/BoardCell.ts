@@ -1,4 +1,4 @@
-export interface BoardCell {
+export type BoardCell = {
     value: number,
     x: number,
     y: number,

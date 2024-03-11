@@ -1,6 +1,6 @@
 import React from 'react'
 import Badge from 'react-bootstrap/Badge';
-import { PlayerTypes } from '../../enums/PlayerTypes';
+import { PlayerTypes } from '../../lib/enums/PlayerTypes';
 
 interface Props {
     children: React.ReactNode;
@@ -19,6 +19,7 @@ function PlayerBadge(props: Props) {
         break;
     }
 
+    
     return (
     <Badge pill bg={color}>{props.children}</Badge>
     );
