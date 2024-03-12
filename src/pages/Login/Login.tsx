@@ -32,8 +32,7 @@ export const Login = () => {
         
       
     } catch(err) {
-      console.log(err);
-        toast.error("Er is iets fout gegaan, probeer het later opnieuw!");
+        toast.error("Oeps! Er is iets fout gegaan");
     }
   };
 
