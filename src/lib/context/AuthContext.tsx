@@ -36,19 +36,22 @@ export const AuthProvider = ( props: Props) => {
 
     if(response.status === 200) {
       setUser(data);
+
+      sessionStorage.setItem("authTokens", JSON.stringify(data));
+
       setLoggedIn(true);
     }
- 
   };
 
   const logout = () => {
     // Perform logout logic here (e.g., clear local storage, make API call)
+
+    sessionStorage.removeItem("authTokens");
+
+
     setUser(null);
     setLoggedIn(false);
   };
-
-
-
 
 
   const authContextValue: AuthContextType = {

@@ -17,7 +17,16 @@ function GameBoard4InARow() {
   // @todo update realtime
   const [currentPlayer, setCurrentPlayer] = useState<Player>({playerNumber: 1, username: "Speler"});
 
-  const [field, setField] = useState<BoardCell[]>();
+  const [field, setField] = useState<BoardCell[]>([
+    {"value": 0, "x": 0, "y": 0}, {"value": 0, "x": 1, "y": 0}, {"value": 0, "x": 2, "y": 0}, {"value": 0, "x": 3, "y": 0}, {"value": 0, "x": 4, "y": 0}, {"value": 0, "x": 5, "y": 0}, {"value": 0, "x": 6, "y": 0}, {"value": 0, "x": 7, "y": 0},
+    {"value": 0, "x": 0, "y": 1}, {"value": 0, "x": 1, "y": 1}, {"value": 0, "x": 2, "y": 1}, {"value": 0, "x": 3, "y": 1}, {"value": 0, "x": 4, "y": 1}, {"value": 0, "x": 5, "y": 1}, {"value": 0, "x": 6, "y": 1}, {"value": 0, "x": 7, "y": 1},
+    {"value": 0, "x": 0, "y": 2}, {"value": 0, "x": 1, "y": 2}, {"value": 0, "x": 2, "y": 2}, {"value": 0, "x": 3, "y": 2}, {"value": 0, "x": 4, "y": 2}, {"value": 0, "x": 5, "y": 2}, {"value": 0, "x": 6, "y": 2}, {"value": 0, "x": 7, "y": 2},
+    {"value": 0, "x": 0, "y": 3}, {"value": 0, "x": 1, "y": 3}, {"value": 0, "x": 2, "y": 3}, {"value": 0, "x": 3, "y": 3}, {"value": 0, "x": 4, "y": 3}, {"value": 0, "x": 5, "y": 3}, {"value": 0, "x": 6, "y": 3}, {"value": 0, "x": 7, "y": 3},
+    {"value": 0, "x": 0, "y": 4}, {"value": 0, "x": 1, "y": 4}, {"value": 0, "x": 2, "y": 4}, {"value": 0, "x": 3, "y": 4}, {"value": 0, "x": 4, "y": 4}, {"value": 0, "x": 5, "y": 4}, {"value": 0, "x": 6, "y": 4}, {"value": 0, "x": 7, "y": 4},
+    {"value": 2, "x": 0, "y": 5, "new": true}, {"value": 0, "x": 1, "y": 5}, {"value": 0, "x": 2, "y": 5}, {"value": 0, "x": 3, "y": 5}, {"value": 0, "x": 4, "y": 5}, {"value": 0, "x": 5, "y": 5}, {"value": 0, "x": 6, "y": 5}, {"value": 0, "x": 7, "y": 5},
+    {"value": 2, "x": 0, "y": 6}, {"value": 0, "x": 1, "y": 6}, {"value": 0, "x": 2, "y": 6}, {"value": 0, "x": 3, "y": 6}, {"value": 0, "x": 4, "y": 6}, {"value": 0, "x": 5, "y": 6}, {"value": 0, "x": 6, "y": 6}, {"value": 0, "x": 7, "y": 6},
+    {"value": 1, "x": 0, "y": 7}, {"value": 1, "x": 1, "y": 7}, {"value": 0, "x": 2, "y": 7}, {"value": 0, "x": 3, "y": 7}, {"value": 0, "x": 4, "y": 7}, {"value": 0, "x": 5, "y": 7}, {"value": 0, "x": 6, "y": 7}, {"value": 0, "x": 7, "y": 7},
+  ]);
 
   useEffect(() => {
     getGameField();
@@ -52,11 +61,15 @@ function GameBoard4InARow() {
  
   );
 
-async function getGameField() {
-  const response = await fetch('weatherforecast');
-  const data = await response.json();
-  setField(data);}
+  async function getGameField() {
+    const response = await fetch('https://localhost:7161/WeatherForecast/boeie');
+    const data = await response.json();
+
+    console.log(data);
+    console.log('dwa');
+  }
+
 }
 
 
-export default GameBoard4InARow
+export default GameBoard4InARow;

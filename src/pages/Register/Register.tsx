@@ -18,16 +18,12 @@ export const Register = () => {
     // return <Navigate to={"/login"} />;  
 
     toast.success("Je account is succesvol aangemaakt");
-    toast.error("Je account kon niet aangekomt worden, probeer het later opnieuw!");
+    // toast.error("Je account kon niet aangekomt worden, probeer het later opnieuw!");
   };
   
-
   const onError = () => {
     toast.error("Vul alle velden correct in!");
   }
-
-
-
 
   return (
     <div className='form-container'>
@@ -46,17 +42,22 @@ export const Register = () => {
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
-          <Form.Control 
-          isValid={ errors?.password === null}
-          type="password" placeholder="Password"
-           {...register("password", {
-            required: true,
-            pattern: {
-              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{6,}$/,
-              message: "Het wachtwoord moet minimaal één kleine letter, één hoofdletter, één cijfer en één speciaal teken bevatten en minimaal zes tekens lang zijn"
-            }
-            })}/>
-    
+          <Form.Control
+             isValid={ errors?.password === null} type="password" placeholder="Password"
+            {...register("password", {
+              required: true,
+              pattern: {
+                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{6,}$/,
+                message: "Het wachtwoord moet minimaal één kleine letter, één hoofdletter, één cijfer en één speciaal teken bevatten en minimaal zes tekens lang zijn"
+              }}
+            )}
+            />
+
+          {errors?.password && (
+            <Form.Text className="text-danger">
+              {errors?.password?.message}
+            </Form.Text>
+          )}
         </Form.Group>
 
       

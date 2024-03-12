@@ -1,9 +1,10 @@
 import './assets/App.scss';
 import { ToastContainer } from 'react-toastify';
 import { RoutesComponent } from './components/RoutesComponent';
-import { AuthProvider } from './lib/context/AuthContext';
-function App() {
+import axios from 'axios';
 
+function App() {
+    axios.defaults.withCredentials = true;
     return (
             <div className="container">
             <ToastContainer />

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { AxiosInstance } from "../utils/AxiosInstance";
 
 const baseURL = "https://localhost:7161";
 // private client:AxiosInstance;
@@ -11,11 +12,20 @@ const baseURL = "https://localhost:7161";
         // baseURL: this.baseURL
     // });
 // }
+axios.defaults.withCredentials = true;
 
 export const login = async (email: string, password: string) => {
-    const response = await axios.post(`${baseURL}/login`, {
+    const response = await axios.post(`${baseURL}/login?useCookies=true`, {
         email: email,
         password: password,
+    });
+
+    return response;
+}
+
+export const refreshSession = async (refreshToken: string) => {
+    const response = await axios.post(`${baseURL}/refresh`, {
+        refreshToken: refreshToken,
     });
 
     return response;
