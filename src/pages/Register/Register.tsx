@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Form, Toast } from 'react-bootstrap'
-import { Link, Navigate, redirect } from 'react-router-dom'
-import { useForm, SubmitHandler, FieldError, FieldErrors } from "react-hook-form";
+import { useState } from 'react'
+import { Button, Form } from 'react-bootstrap'
+import { Link, useNavigate } from 'react-router-dom'
+import { useForm, SubmitHandler } from "react-hook-form";
 import '../../assets/Form.scss';
 import { toast } from 'react-toastify';
+import { register as registerAPI} from '../../lib/services/AuthService';
+import {updateToast} from '../../lib/services/ToastService';
 
 type Inputs = {
   email: string,
@@ -11,14 +13,25 @@ type Inputs = {
 };
 
 export const Register = () => {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = data => {
-    console.log(data);
+  const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+  const [disableSubmit, setDisableSubmit] = useState(false);
+  const navigate = useNavigate();
 
-    // return <Navigate to={"/login"} />;  
+  const onSubmit: SubmitHandler<Inputs> = async data => {
+    setDisableSubmit(true);
 
-    toast.success("Je account is succesvol aangemaakt");
-    // toast.error("Je account kon niet aangekomt worden, probeer het later opnieuw!");
+    const id = toast.loading("Een moment geduld...")
+
+
+    try {
+      await registerAPI(data.email,  data.password );
+
+      updateToast(id, "Je account is succesvol aangemaakt",  'success', true);
+      navigate("/login");
+    } catch (error) {
+      updateToast(id, "Je account kon niet aangemaakt worden, probeer het later opnieuw",  'error', true);
+      setDisableSubmit(false);
+    }
   };
   
   const onError = () => {
@@ -62,11 +75,13 @@ export const Register = () => {
 
       
         <Form.Group className='footer'> 
+
+          <Button variant={"success" + (disableSubmit ? ' ' + 'disabled' : '')} type="submit">
+            Account aanmaken
+          </Button>
+
           <Link to="/login">Heb je al een account?</Link>
 
-          <Button variant="success" type="submit">
-            Login
-          </Button>
         </Form.Group>
 
       </Form>

@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { Link, Navigate } from 'react-router-dom'
 import { useForm, SubmitHandler } from "react-hook-form";
 import '../../assets/Form.scss';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../lib/context/AuthContext'; // Assuming you export AuthContext from AuthContext.tsx
-import { Exception } from 'sass';
+import { updateErrorToast, updateToast } from '../../lib/services/ToastService';
 
 type Inputs = {
   email: string,
@@ -14,30 +14,30 @@ type Inputs = {
 
 export const Login = () => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>();
-  const { login, user, loggedIn} = useAuth();
+  const { login, user, logout, loggedIn} = useAuth();
+  const [disableSubmit, setDisableSubmit] = useState(false);
 
   if(loggedIn) {
     return <Navigate replace to="/home" />;
   }
 
   const onSubmit: SubmitHandler<Inputs> = async (formData) => {
+
+    const id = toast.loading("Een moment geduld...")
+
     try {
       await login(formData.email, formData.password);
-      // const data = await response.data;
-      // console.log(data);
-      // if(response.status === 200) {
 
-        // login(data);
-        toast.success("Succesvol ingelogd");
-        
-      
+        updateToast(id, "Succesvol ingelogd",  'success', true);
+
     } catch(err) {
-        toast.error("Oeps! Er is iets fout gegaan");
+      updateErrorToast(id);
     }
   };
 
   const onError = () => {
-    toast.error("Vul alle velden correct in!");
+
+    toast.error("");
   }
   
 
@@ -65,16 +65,13 @@ export const Login = () => {
           )}
           
         </Form.Group>
-
-      
         <Form.Group className='footer'>
-          <Link to="/register">Nog geen account?</Link>
-
-          <Button variant="success" type="submit">
+        <Button variant={"success" + (disableSubmit ? ' ' + 'disabled' : '')} type="submit">
             Login
           </Button>
-        </Form.Group>
 
+          <Link to="/register">Nog geen account?</Link>
+        </Form.Group>
       </Form>
     </div>
   )

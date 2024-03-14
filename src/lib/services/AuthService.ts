@@ -1,6 +1,6 @@
 import axios from "axios";
-import { AxiosInstance } from "../utils/AxiosInstance";
 
+// @todo env variable
 const baseURL = "https://localhost:7161";
 // private client:AxiosInstance;
 // const client;
@@ -45,7 +45,7 @@ export const signOut = async () => {
 // }
 
 export const register = async (email: string, password: string) => {
-    const response = await axios.post(`${baseURL}/login`, {
+    const response = await AxiosInstance.post(`${baseURL}/register`, {
         email: email,
         password: password,
     });

@@ -68,11 +68,11 @@ function GameBoard4InARow() {
   );
 
   async function getGameField() {
-    const response = await axios.get('https://localhost:7161/WeatherForecast/boeie');
-    const data = await response.data;
+    // const response = await axios.get('https://localhost:7161/WeatherForecast/boeie');
+    // const data = await response.data;
 
-    console.log(data);
-    console.log('dwa');
+    // console.log(data);
+    // console.log('dwa');
   }
 
 }

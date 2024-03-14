@@ -1,7 +1,8 @@
 // AuthContext.js
-import React, { createContext, useState, useContext } from 'react';
-import {login as loginAPI} from '../../lib/services/AuthService';
+import React, { createContext, useState, useContext, useMemo } from 'react';
+import {login as loginAPI, signOut as signOutAPI} from '../../lib/services/AuthService';
 
+// const navigate = useNavigate();
 // @todo add roles??
 interface User {
     accessToken: string;
@@ -9,13 +10,16 @@ interface User {
     expiresIn: number;
     tokenType: string;
 }
-  
+
+
+
 interface AuthContextType {
     user: User | null;
     loggedIn: boolean;
     login: (token: string) => void;
     logout: () => void;
 }
+
 
 interface Props {
     children: React.ReactNode
@@ -29,6 +33,9 @@ export const AuthProvider = ( props: Props) => {
   const [user, setUser] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
 
+
+
+    
   const login = async (email: string, password: string) => {
     // Perform login logic here (e.g., make API call)
     const response = await loginAPI(email, password);
@@ -43,23 +50,33 @@ export const AuthProvider = ( props: Props) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     // Perform logout logic here (e.g., clear local storage, make API call)
 
-    sessionStorage.removeItem("authTokens");
-
+    await signOutAPI();
+      
 
     setUser(null);
     setLoggedIn(false);
+
+
   };
 
 
-  const authContextValue: AuthContextType = {
+  // const authContextValue: AuthContextType = {
+    // user,
+    // login,
+    // loggedIn,
+    // logout,
+  // };
+
+
+  const value = useMemo(() => ({
     user,
     login,
     loggedIn,
     logout,
-  };
+    }), [user]);
 
-  return <AuthContext.Provider value={authContextValue}>{props.children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>;
 };
