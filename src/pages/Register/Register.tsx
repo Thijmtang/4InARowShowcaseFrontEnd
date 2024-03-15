@@ -6,6 +6,7 @@ import '../../assets/Form.scss';
 import { toast } from 'react-toastify';
 import { register as registerAPI} from '../../lib/services/AuthService';
 import {updateToast} from '../../lib/services/ToastService';
+import { FormCard } from '../../components/FormCard';
 
 type Inputs = {
   email: string,
@@ -39,7 +40,7 @@ export const Register = () => {
   }
 
   return (
-    <div className='form-container'>
+    <FormCard>
       <h1>Register</h1>
       <Form onSubmit={handleSubmit(onSubmit, onError)}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -85,6 +86,6 @@ export const Register = () => {
         </Form.Group>
 
       </Form>
-    </div>
+  </FormCard>
   )
 }

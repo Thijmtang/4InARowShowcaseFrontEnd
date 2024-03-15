@@ -6,6 +6,7 @@ import '../../assets/Form.scss';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../lib/context/AuthContext'; // Assuming you export AuthContext from AuthContext.tsx
 import { updateErrorToast, updateToast } from '../../lib/services/ToastService';
+import { FormCard } from '../../components/FormCard';
 
 type Inputs = {
   email: string,
@@ -18,7 +19,7 @@ export const Login = () => {
   const [disableSubmit, setDisableSubmit] = useState(false);
 
   if(loggedIn) {
-    return <Navigate replace to="/home" />;
+    return <Navigate replace to="/" />;
   }
 
   const onSubmit: SubmitHandler<Inputs> = async (formData) => {
@@ -42,7 +43,8 @@ export const Login = () => {
   
 
   return (
-    <div className='form-container'>
+    <FormCard>
+  
       <h1>Login</h1>
       <Form onSubmit={handleSubmit(onSubmit, onError)}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -73,6 +75,6 @@ export const Login = () => {
           <Link to="/register">Nog geen account?</Link>
         </Form.Group>
       </Form>
-    </div>
+    </FormCard>
   )
 }

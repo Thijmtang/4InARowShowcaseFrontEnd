@@ -10,7 +10,6 @@ import { Lobby } from '../pages/Lobby'
 export const RoutesComponent = () => {
   const { user} = useAuth();
 
-  
   return (
     <BrowserRouter>
     <Header />

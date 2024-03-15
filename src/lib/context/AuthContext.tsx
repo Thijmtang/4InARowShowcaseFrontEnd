@@ -44,7 +44,7 @@ export const AuthProvider = ( props: Props) => {
     if(response.status === 200) {
       setUser(data);
 
-      sessionStorage.setItem("authTokens", JSON.stringify(data));
+      // sessionStorage.setItem("authTokens", JSON.stringify(data));
 
       setLoggedIn(true);
     }
@@ -58,8 +58,6 @@ export const AuthProvider = ( props: Props) => {
 
     setUser(null);
     setLoggedIn(false);
-
-
   };
 
 
