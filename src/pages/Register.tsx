@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm, SubmitHandler } from "react-hook-form";
-import '../../assets/Form.scss';
+import '../assets/Form.scss';
 import { toast } from 'react-toastify';
-import { register as registerAPI} from '../../lib/services/AuthService';
-import {updateToast} from '../../lib/services/ToastService';
-import { FormCard } from '../../components/FormCard';
+import { register as registerAPI} from '../lib/services/AuthService';
+import {updateToast} from '../lib/services/ToastService';
+import { FormCard } from '../components/FormCard';
 
 type Inputs = {
   email: string,

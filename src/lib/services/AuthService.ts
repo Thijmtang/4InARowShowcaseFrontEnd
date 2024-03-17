@@ -20,10 +20,11 @@ const AxiosInstance = axios.create({
 
 axios.defaults.withCredentials = true;
 
-export const login = async (email: string, password: string) => {
+export const login = async (email: string, password: string, twoFactorAuthcode: string) => {
     const response = await AxiosInstance.post(`${baseURL}/login?useCookies=true`, {
         email: email,
         password: password,
+        twoFactorCode: twoFactorAuthcode
     });
 
     return response;
@@ -52,3 +53,20 @@ export const register = async (email: string, password: string) => {
 
     return response;
 }
+
+
+export const getTwoFactorSecretKey = async () => {
+    const response = await AxiosInstance.get(`${baseURL}/TwoFactor/secret`, {});
+    return response;
+}
+
+export const enableTwoFactorAuthentication = async (verificationCode: string) => {
+    const response = await AxiosInstance.post(`${baseURL}/TwoFactor/enable`, {Code: verificationCode});
+    
+    return response;
+}
+
+export const getUserInfo = async () => {
+    const response = await AxiosInstance.get(`${baseURL}/UserInfo`);
+    return response;
+};

@@ -1,5 +1,6 @@
 import { Id, toast } from "react-toastify";
-  
+    export const standardErrorMessage = 'Er is iets fout gegaan, probeer het later opnieuw!';
+
     export const updateToast = (
         id: Id,
         message: string,
@@ -9,7 +10,7 @@ import { Id, toast } from "react-toastify";
         toast.update(id, { render: message, type: type, isLoading: false , closeButton: true, autoClose: (autoclose ? 2000 : 0)});
     }
 
-    export const updateErrorToast = (id: Id, message: string='Er is iets fout gegaan, probeer het later opnieuw!', autoclose: boolean = true) => {
+    export const updateErrorToast = (id: Id, message: string=standardErrorMessage, autoclose: boolean = true) => {
         updateToast(id, message, 'error', autoclose);
     }
 

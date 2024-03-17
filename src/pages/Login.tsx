@@ -1,15 +1,16 @@
 import React, { useMemo, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useForm, SubmitHandler } from "react-hook-form";
-import '../../assets/Form.scss';
+import '../assets/Form.scss';
 import { toast } from 'react-toastify';
-import { useAuth } from '../../lib/context/AuthContext'; // Assuming you export AuthContext from AuthContext.tsx
-import { updateErrorToast, updateToast } from '../../lib/services/ToastService';
-import { FormCard } from '../../components/FormCard';
+import { useAuth } from '../lib/context/AuthContext'; // Assuming you export AuthContext from AuthContext.tsx
+import { updateErrorToast, updateToast } from '../lib/services/ToastService';
+import { FormCard } from '../components/FormCard';
 
 type Inputs = {
   email: string,
+  twoFactorAuthcode: string,
   password: string,
 };
 
@@ -17,8 +18,10 @@ export const Login = () => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>();
   const { login, user, logout, loggedIn} = useAuth();
   const [disableSubmit, setDisableSubmit] = useState(false);
+  const navigate = useNavigate();
 
-  if(loggedIn) {
+  if(user) {
+    // return <Navigate replace to="/enable2FA" />;
     return <Navigate replace to="/" />;
   }
 
@@ -27,9 +30,12 @@ export const Login = () => {
     const id = toast.loading("Een moment geduld...")
 
     try {
-      await login(formData.email, formData.password);
+      await login(formData.email, formData.password, formData.twoFactorAuthcode);
 
-        updateToast(id, "Succesvol ingelogd",  'success', true);
+
+      updateToast(id, "Succesvol ingelogd",  'success', true);
+
+ 
 
     } catch(err) {
       updateErrorToast(id);
@@ -57,6 +63,7 @@ export const Login = () => {
           )}
         </Form.Group>
 
+
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control type="password" placeholder="Password" {...register("password", {required: true})}/>
@@ -67,6 +74,19 @@ export const Login = () => {
           )}
           
         </Form.Group>
+
+
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Verification code</Form.Label>
+          <Form.Control type="text" placeholder="Authenticatie code" {...register("twoFactorAuthcode", {required:true })} maxLength={6}/>
+          {errors?.twoFactorAuthcode && (
+            <Form.Text className="text-danger">
+              {errors?.twoFactorAuthcode?.message}
+            </Form.Text>
+          )}
+        </Form.Group>
+
+
         <Form.Group className='footer'>
         <Button variant={"success" + (disableSubmit ? ' ' + 'disabled' : '')} type="submit">
             Login

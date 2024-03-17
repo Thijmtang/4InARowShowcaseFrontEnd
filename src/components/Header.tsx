@@ -21,19 +21,21 @@ function Header() {
       updateErrorToast(id);
     }
   }
-  let navLinks = <></>;
-  
 
-  if(!loggedIn) {
+  let navLinks = <></>;
+
+  if(!user) {
     navLinks =  <NavLink to={"/login"} className='nav-link'>Login</NavLink>;
   } else {
     navLinks =  <button className='nav-link' onClick={logOutEvent}>Uitloggen</button>;
-
   }
-  
+
+
+
   //@todo add Roles only routes
   return (
     <>  
+
     <Navbar expand="lg" className="bg-body-tertiary mb-4 justify-content-end" >
       <Container>
         <Navbar.Brand href="">
