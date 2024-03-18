@@ -1,42 +1,41 @@
 import { Route } from "react-router-dom";
 import { UserInfo } from "../interfaces/UserInfo";
 import { Lobby } from "../../pages/Lobby";
-import { EnableTwoFactor } from "../../pages/TwoFactorAuthentication/EnableTwoFactor";
 import { Login } from "../../pages/Login";
 import { Register } from "../../pages/Register";
+import { EnableTwoFactor } from "../../pages/TwoFactorAuthentication/EnableTwoFactor";
+import { TwoFactorLogin } from "../../pages/TwoFactorAuthentication/TwoFactorLogin";
 
 export const getRoutes = (user: UserInfo) => {
-  const routeContent = [];
+  let routeContent = <></>;
 
     // User is logged in
     if(user) {
         if(!user.twoFactorEnabled) {
+          routeContent = <>
+                  <Route path="" element={<EnableTwoFactor/>} />
+          </>;
 
-          
-        routeContent.push(
-          <>
-                <Route path="" element={<Lobby/>} />
-          </>);
-
-        return routeContent;
+          return routeContent;
         }
 
       
-        routeContent.push(
+        // Login 2FA routes only
+        routeContent = 
           <>
                 <Route path="" element={<Lobby/>} />
-          </>);
+          </>;
         return routeContent;
     }
 
     
-    routeContent.push(
+    routeContent= 
       <>
         <Route path="/Login" element={<Login/>} />
+        <Route path="/2fa/verify" element={<TwoFactorLogin/>} />
         <Route path="/Register" element={<Register/>} />
       
-      </>
-    );
+      </>;
 
   return routeContent;
 }

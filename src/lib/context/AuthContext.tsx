@@ -2,6 +2,7 @@
 import React, { createContext, useState, useContext, useMemo } from 'react';
 import {login as loginAPI, signOut as signOutAPI, getUserInfo} from '../../lib/services/AuthService';
 import { UserInfo } from '../interfaces/UserInfo';
+import ArgumentError from '../errors/ArgumentError';
 
 // const navigate = useNavigate();
 // @todo add roles??
@@ -9,7 +10,7 @@ import { UserInfo } from '../interfaces/UserInfo';
 
 
 interface AuthContextType {
-    user: UserInfo | null;
+    user: UserInfo;
     loggedIn: boolean;
     login: (email: string, password: string, twoFactorAuthcode: string) => void;
     logout: () => void;
@@ -23,17 +24,18 @@ interface Props {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext) as AuthContextType;
 
 export const AuthProvider = ( props: Props) => {
   const [user, setUser] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
     
-  const login = async (email: string, password: string, twoFactorAuthcode: string) => {
+  const login = async (email: string, password: string, twoFactorAuthcode: string = '') => {
     // Perform login logic here (e.g., make API call)
     const response = await loginAPI(email, password, twoFactorAuthcode);
     const data = await response.data;
 
+    // User succesfully logged in 
     if(response.status === 200) {
       const userData = await getUserInfo();
       await setUser(userData.data);
@@ -44,8 +46,12 @@ export const AuthProvider = ( props: Props) => {
       return;
     }
 
-    setUser(null);
-    throw new Error("2FA code is niet valide");
+    // Requires 2FA authentication
+    if(response.status == 401 && data.detail === 'RequiresTwoFactor') {
+      setUser(null);
+      throw new ArgumentError("2FA code is niet valide");
+    }
+
   };
 
   const logout = async () => {
@@ -69,21 +75,22 @@ export const AuthProvider = ( props: Props) => {
   }
 
 
-  // const authContextValue: AuthContextType = {
-    // user,
-    // login,
-    // loggedIn,
-    // logout,
-  // };
-
-
-  const value = useMemo(() => ({
+  const authContextValue: AuthContextType = {
     user,
     login,
     loggedIn,
     logout,
     refreshUser
-    }), [user]);
+  };
 
-  return <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>;
+
+  // const value = useMemo(() => ({
+  //   user,
+  //   login,
+  //   loggedIn,
+  //   logout,
+  //   refreshUser
+  //   }), [user]);
+
+  return <AuthContext.Provider value={authContextValue}>{props.children}</AuthContext.Provider>;
 };

@@ -29,7 +29,7 @@ export const Lobby = () => {
       <Form onSubmit={handleSubmit(onSubmit, onError)}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Lobbycode</Form.Label>
-          <Form.Control type="email" placeholder="Voer een lobbycode in" {...register("lobbycode", {required: true})}/>
+          <Form.Control type="text" placeholder="Voer een lobbycode in" {...register("lobbycode", {required: true})}/>
           {errors?.lobbycode && (
             <Form.Text className="text-danger">
               {errors?.lobbycode?.message}

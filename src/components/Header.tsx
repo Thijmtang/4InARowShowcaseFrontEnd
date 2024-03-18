@@ -16,7 +16,7 @@ function Header() {
     const id = toast.loading("Een moment geduld...")
     try {
       await logout();
-      updateToast(id, "Succesvol uitgelogd",  'success', true);
+      updateToast(id, "Uitgelogd",  'success', true);
     } catch(err) {
       updateErrorToast(id);
     }
@@ -25,7 +25,10 @@ function Header() {
   let navLinks = <></>;
 
   if(!user) {
-    navLinks =  <NavLink to={"/login"} className='nav-link'>Login</NavLink>;
+    navLinks =  <>
+      <NavLink to={"/register"} className='nav-link'>Registreren</NavLink>
+      <NavLink to={"/login"} className='nav-link'>Login</NavLink>
+    </>;
   } else {
     navLinks =  <button className='nav-link' onClick={logOutEvent}>Uitloggen</button>;
   }
@@ -33,9 +36,7 @@ function Header() {
 
 
   //@todo add Roles only routes
-  return (
-    <>  
-
+  return (<>  
     <Navbar expand="lg" className="bg-body-tertiary mb-4 justify-content-end" >
       <Container>
         <Navbar.Brand href="">
@@ -50,9 +51,7 @@ function Header() {
         </Navbar.Collapse>
       </Container>
     </Navbar>
-    </>
-
-);  
+  </>);  
 }
 
 export default Header

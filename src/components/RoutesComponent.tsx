@@ -1,13 +1,11 @@
-import React from 'react'
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
-import GameBoard4InARow from '../pages/GameBoard4InARow'
 import { Login } from '../pages/Login'
-import { Register } from '../pages/Register'
 import Header from './Header'
 import { useAuth } from '../lib/context/AuthContext'
 import { Lobby } from '../pages/Lobby'
 import { EnableTwoFactor } from '../pages/TwoFactorAuthentication/EnableTwoFactor'
 import { getRoutes } from '../lib/services/RoutesService'
+import GameBoard4InARow from '../pages/GameBoard4InARow'
 
 export const RoutesComponent = () => {
   const { user} = useAuth();
@@ -17,9 +15,16 @@ export const RoutesComponent = () => {
 
   let fallBackRoute = <GameBoard4InARow />;
 
-  if(user && !user.twoFactorEnabled) {
-    fallBackRoute = <EnableTwoFactor />
-  }
+  //@otdo fix dit 
+  // if(!user) {
+    // fallBackRoute = <Login />
+// }
+
+//   if(user && !user.twoFactorEnabled) {
+//     fallBackRoute = <EnableTwoFactor />
+//   }
+
+  console.log(routeContent);
   
 
   return (

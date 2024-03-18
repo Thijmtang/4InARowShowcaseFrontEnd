@@ -1,16 +1,17 @@
 import React, { useMemo, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, redirect, useNavigate } from 'react-router-dom'
 import { useForm, SubmitHandler } from "react-hook-form";
 import '../assets/Form.scss';
 import { toast } from 'react-toastify';
 import { useAuth } from '../lib/context/AuthContext'; // Assuming you export AuthContext from AuthContext.tsx
 import { updateErrorToast, updateToast } from '../lib/services/ToastService';
 import { FormCard } from '../components/FormCard';
+import ArgumentError from '../lib/errors/ArgumentError';
+import { TwoFactorLogin } from './TwoFactorAuthentication/TwoFactorLogin';
 
 type Inputs = {
   email: string,
-  twoFactorAuthcode: string,
   password: string,
 };
 
@@ -20,31 +21,41 @@ export const Login = () => {
   const [disableSubmit, setDisableSubmit] = useState(false);
   const navigate = useNavigate();
 
-  if(user) {
-    // return <Navigate replace to="/enable2FA" />;
-    return <Navigate replace to="/" />;
-  }
+  // if(user) {
+  //   return <Navigate replace to="/" />;
+  // }
 
   const onSubmit: SubmitHandler<Inputs> = async (formData) => {
 
     const id = toast.loading("Een moment geduld...")
 
     try {
-      await login(formData.email, formData.password, formData.twoFactorAuthcode);
+      await login(formData.email, formData.password);
 
 
       updateToast(id, "Succesvol ingelogd",  'success', true);
 
- 
-
     } catch(err) {
+      const details = err.response.data.detail;
+
+      // Logged in, but requires 2FA
+      if(details === 'RequiresTwoFactor') {
+        navigate('/2fa/verify', {state: {
+          email: formData.email,
+          password: formData.password,
+        }});
+        // (<TwoFactorLogin />);
+
+          toast.dismiss(id);
+        return;
+      }
+
       updateErrorToast(id);
     }
   };
 
   const onError = () => {
-
-    toast.error("");
+    toast.error("Vul alle velden in!");
   }
   
 
@@ -74,18 +85,6 @@ export const Login = () => {
           )}
           
         </Form.Group>
-
-
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Verification code</Form.Label>
-          <Form.Control type="text" placeholder="Authenticatie code" {...register("twoFactorAuthcode", {required:true })} maxLength={6}/>
-          {errors?.twoFactorAuthcode && (
-            <Form.Text className="text-danger">
-              {errors?.twoFactorAuthcode?.message}
-            </Form.Text>
-          )}
-        </Form.Group>
-
 
         <Form.Group className='footer'>
         <Button variant={"success" + (disableSubmit ? ' ' + 'disabled' : '')} type="submit">
