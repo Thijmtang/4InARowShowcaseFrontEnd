@@ -14,7 +14,7 @@ type Inputs = {
 
 export const TwoFactorLogin = () => {
     const location = useLocation();
-    const locationState = (location.state as {email? : string, password: string});
+    const locationState = (location.state as {emailt : string, password: string});
 
     const{login} = useAuth();
     const [disableSubmit, setDisableSubmit] = useState(false);
@@ -22,16 +22,12 @@ export const TwoFactorLogin = () => {
 
     const navigate = useNavigate();
 
-
-
-    // get userId
-    let email = locationState?.email;
-    let password = locationState?.password;
+    const email = locationState?.email;
+    const password = locationState?.password;
 
     if(!email || !password) {
         navigate('/login');
     }
-
 
     const onSubmit: SubmitHandler<Inputs> = async (formData) => {
         setDisableSubmit(true);
@@ -41,8 +37,6 @@ export const TwoFactorLogin = () => {
         try {
 
             await login(email, password, formData.VerificationToken);
-
-
 
             navigate("/");
             updateToast(id, "Succesvol ingelogd",  'success', true);

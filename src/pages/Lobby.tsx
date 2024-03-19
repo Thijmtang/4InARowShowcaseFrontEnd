@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FormCard } from '../components/FormCard'
 import { Button, Form } from 'react-bootstrap'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import * as signalR from "@microsoft/signalr";
 import { useAuth } from '../lib/context/AuthContext';
+import { standardErrorMessage } from '../lib/services/ToastService';
 
 type Inputs = {
   lobbycode: string,
@@ -13,13 +14,8 @@ type Inputs = {
 export const Lobby = () => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>();
   const {user} = useAuth();
-
-  const onSubmit: SubmitHandler<Inputs> = async () => {
-
-    const id = toast.loading("Een moment geduld...")
-    // send();
-  };
-
+  const [action, setAction] = useState('');
+  
   const connection = new signalR.HubConnectionBuilder()
   .withUrl("https://localhost:7161/hub")
   .build();
@@ -27,27 +23,50 @@ export const Lobby = () => {
   connection.start().catch((err) => document.write(err));
 
 
-  connection.on("ReceiveMessage", (username: string, message: string) => {
-  console.log(message);
-  // const m = document.createElement("div");
 
-  // m.innerHTML = `<div class="message-author">${username}</div><div>${message}</div>`;
-
-  // divMessages.appendChild(m);
-  // divMessages.scrollTop = divMessages.scrollHeight;
+  connection.on("FlashAlert", (message: string, type: string) => {
+    try {
+        toast[type](message);
+    } catch (error) {
+      toast.error(standardErrorMessage);
+    }
   });
 
+  connection.on("Send", (message: string) => {
+    try {
+      console.log(message);
+    } catch (error) {
+      toast.error(standardErrorMessage);
+    }
+  });
 
+  const joinLobby = async (name: string) => {
+    await connection.send("JoinLobby", name);
+  }
 
-  function send() {
-    connection.send("SendMessage", user.username, user.username);
-  };
-
+  const createLobby = async (name: string) => {
+    await connection.send("CreateLobby", name);
+  }
   
   const onError = () => {
-    send();
+    // send();
     toast.error("Lobby bestaat niet");
+
+    joinLobby();
+
   }
+
+  const onSubmit: SubmitHandler<Inputs> = async (formData: Inputs) => {
+    if(action === 'join') {
+        joinLobby(formData.lobbycode);
+        return;
+    }
+
+    createLobby(formData.lobbycode);
+
+    // const id = toast.loading("Een moment geduld...")
+    // send();
+  };
 
 
   return (
@@ -65,13 +84,15 @@ export const Lobby = () => {
         </Form.Group>
      
         <Form.Group className='footer'>
-        <Button variant={'secondary'} type="submit">
+        <Button variant={'secondary'} type="submit" onClick={ () => setAction('join') }>
             Join lobby
         </Button>
-        <Button variant={"success"} type="submit">
+        <Button variant={"success"} type="submit" onClick={ () => setAction('create') }>
             Aanmaken
         </Button>
         </Form.Group>
-      </Form>    </FormCard>
+      </Form>   
+       
+    </FormCard>
   )
 }
