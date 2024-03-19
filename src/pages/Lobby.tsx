@@ -3,6 +3,8 @@ import { FormCard } from '../components/FormCard'
 import { Button, Form } from 'react-bootstrap'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import * as signalR from "@microsoft/signalr";
+import { useAuth } from '../lib/context/AuthContext';
 
 type Inputs = {
   lobbycode: string,
@@ -10,15 +12,40 @@ type Inputs = {
 
 export const Lobby = () => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>();
+  const {user} = useAuth();
 
   const onSubmit: SubmitHandler<Inputs> = async () => {
 
     const id = toast.loading("Een moment geduld...")
-
+    // send();
   };
 
-  const onError = () => {
+  const connection = new signalR.HubConnectionBuilder()
+  .withUrl("https://localhost:7161/hub")
+  .build();
 
+  connection.start().catch((err) => document.write(err));
+
+
+  connection.on("ReceiveMessage", (username: string, message: string) => {
+  console.log(message);
+  // const m = document.createElement("div");
+
+  // m.innerHTML = `<div class="message-author">${username}</div><div>${message}</div>`;
+
+  // divMessages.appendChild(m);
+  // divMessages.scrollTop = divMessages.scrollHeight;
+  });
+
+
+
+  function send() {
+    connection.send("SendMessage", user.username, user.username);
+  };
+
+  
+  const onError = () => {
+    send();
     toast.error("Lobby bestaat niet");
   }
 

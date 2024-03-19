@@ -12,7 +12,7 @@ import { useAuth } from '../../lib/context/AuthContext';
 
 type Inputs = {
     VerificationToken: string,
-  };
+};
   
 export const EnableTwoFactor = () => {
     const{refreshUser} = useAuth();

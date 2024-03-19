@@ -13,16 +13,16 @@ export const RoutesComponent = () => {
 
   const routeContent = getRoutes(user);
 
-  let fallBackRoute = <GameBoard4InARow />;
+  let fallBackRoute = <Lobby />;
 
   //@otdo fix dit 
-  // if(!user) {
-    // fallBackRoute = <Login />
-// }
+  if(!user) {
+    fallBackRoute = <Login />
+}
 
-//   if(user && !user.twoFactorEnabled) {
-//     fallBackRoute = <EnableTwoFactor />
-//   }
+  if(user && !user.twoFactorEnabled) {
+    fallBackRoute = <EnableTwoFactor />
+  }
 
   console.log(routeContent);
   
