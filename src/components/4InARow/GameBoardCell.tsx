@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BoardCell } from '../../interfaces/BoardCell';
-import { json } from 'react-router-dom';
+import { BoardCell } from '../../lib/interfaces/BoardCell';
 import axios from 'axios';
 
 enum Status {
@@ -26,8 +25,8 @@ function GameBoardCell(props:Props) {
     
     useEffect(() => {
         // Cells can only be placed by player 1 or 2
-        if(player > 2 || player == 0) {
-            setCssClass('');
+        if(!validValue()) {
+            setCssClass("");
             return;
         }
 
@@ -38,14 +37,9 @@ function GameBoardCell(props:Props) {
 
         setCssClass(`player-${player} ${animation}`);
     });
+
     const clickEvent = async () => {
-
-        // const response = await fetch('weatherforecast', {method: 'POST', body: JSON.stringify(props.cell)});
-        // const data = await response.json();
-        // console.log(data);
-
-
-        let formData = new FormData();
+        const formData = new FormData();
         formData.append("X", positionX.toString());
         formData.append("Y", positionY.toString());
         formData.append("Value", '2');
@@ -55,11 +49,18 @@ function GameBoardCell(props:Props) {
             .post('weatherforecast', formData, 
             )
             .then(({data}) => {
-                console.log(data);
                 props.updateField(data);
             });
 
     };  
+
+    const validValue = (() => {
+        if(player > 2 || player == 0 || player == null) {
+            return false;
+        }
+
+        return true;
+    });
 
     return (
     <div className={`cell ${cssClass}`} onClick={clickEvent}> </div>

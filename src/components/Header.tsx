@@ -2,35 +2,56 @@ import React from 'react'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../lib/context/AuthContext';
+import { updateToast, updateErrorToast } from '../lib/services/ToastService';
+import { toast } from 'react-toastify';
 
 
 function Header() {
-  return (
-    <Navbar expand="lg" className="bg-body-tertiary">
-    <Container>
-      <Navbar.Brand href="#home">4 op een rij Baby</Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="me-auto">
-          <Nav.Link href="#home">Home</Nav.Link>
-          <Nav.Link href="#link">Link</Nav.Link>
-          <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.2">
-              Another action
-            </NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item href="#action/3.4">
-              Separated link
-            </NavDropdown.Item>
-          </NavDropdown>
-        </Nav>
-      </Navbar.Collapse>
-    </Container>
-  </Navbar>
-);  
+  const { user, loggedIn, logout} = useAuth();
+  const navigate = useNavigate();
+  
+  const logOutEvent = async () => {
+    const id = toast.loading("Een moment geduld...")
+    try {
+      await logout();
+      updateToast(id, "Uitgelogd",  'success', true);
+    } catch(err) {
+      updateErrorToast(id);
+    }
+  }
+
+  let navLinks = <></>;
+
+  if(!user) {
+    navLinks =  <>
+      <NavLink to={"/register"} className='nav-link'>Registreren</NavLink>
+      <NavLink to={"/login"} className='nav-link'>Login</NavLink>
+    </>;
+  } else {
+    navLinks =  <button className='nav-link' onClick={logOutEvent}>Uitloggen</button>;
+  }
+
+
+
+  //@todo add Roles only routes
+  return (<>  
+    <Navbar expand="lg" className="bg-body-tertiary mb-4 justify-content-end" >
+      <Container>
+        <Navbar.Brand href="">
+          <NavLink to={""} className='nav-link'>4 op een rij Baby</NavLink>  
+        </Navbar.Brand>
+
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav" className='justify-content-end'>
+          <Nav>
+            {navLinks}
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  </>);  
 }
 
 export default Header
