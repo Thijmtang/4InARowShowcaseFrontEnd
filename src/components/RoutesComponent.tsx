@@ -18,14 +18,12 @@ export const RoutesComponent = () => {
   //@otdo fix dit 
   if(!user) {
     fallBackRoute = <Login />
-}
+  }
 
   if(user && !user.twoFactorEnabled) {
     fallBackRoute = <EnableTwoFactor />
   }
 
-  console.log(routeContent);
-  
 
   return (
     <BrowserRouter>

@@ -3,9 +3,8 @@ import { FormCard } from '../../components/FormCard'
 import { Button, Form } from 'react-bootstrap'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import * as signalR from "@microsoft/signalr";
-import { useAuth } from '../../lib/context/AuthContext';
-import { standardErrorMessage } from '../../lib/services/ToastService';
+import { useSignalR } from '../../lib/context/SignalRContext';
+import { useNavigate } from 'react-router-dom';
 
 type Inputs = {
   lobbycode: string,
@@ -13,9 +12,32 @@ type Inputs = {
 
 export const LobbyJoin = () => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>();
-  const {user} = useAuth();
+
+  // const {user} = useAuth();
   const [action, setAction] = useState('');
-  const [connection, setConnection] = useState<signalR.HubConnection>();
+  // const [connection, setConnection] = useState<signalR.HubConnection>();
+  const navigate = useNavigate();
+  const {connection, establishConnection} = useSignalR();
+  useEffect(() => {
+    establishConnection();
+  },[]);
+
+
+  useEffect(() => {
+    connection?.on('RedirectLobby', (gameLobby: string) => {
+        navigate('/lobby', {
+          state: {
+            gameLobby: JSON.parse(gameLobby),
+          },
+        })
+
+    });
+  }, [connection]);
+
+
+
+  console.log(connection);
+
 
   // useEffect(() => {
   //   // connection.start().catch((err) => document.write(err));
@@ -54,17 +76,6 @@ export const LobbyJoin = () => {
 
     
   // },[connection]);
-
-  // //@todo env
-  // const establishConnection = () => {
-  //   const con = new signalR.HubConnectionBuilder()
-  //   .withUrl("https://localhost:7161/hub")
-  //   .withAutomaticReconnect()
-  //   .build();
-
-  //   setConnection(con);
-  // };  
-
 
   // connection?.on("FlashAlert", (message:string, type:string) => {
   //   try {
@@ -111,9 +122,9 @@ export const LobbyJoin = () => {
       <Form onSubmit={handleSubmit(onSubmit, onError)}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Lobbycode</Form.Label>
-          <Form.Control type="text" placeholder="Voer een lobbycode in" {...register("lobbycode", {required: true})}/>
+          <Form.Control type="text" autoComplete="off" placeholder="Voer een lobbycode in" {...register("lobbycode", {required: true})} />
           {errors?.lobbycode && (
-            <Form.Text className="text-danger">
+            <Form.Text className="text-danger" >
               {errors?.lobbycode?.message}
             </Form.Text>
           )}

@@ -1,14 +1,12 @@
-import React, { useMemo, useState } from 'react'
+import  { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
-import { Link, Navigate, redirect, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm, SubmitHandler } from "react-hook-form";
 import '../assets/Form.scss';
 import { toast } from 'react-toastify';
 import { useAuth } from '../lib/context/AuthContext'; // Assuming you export AuthContext from AuthContext.tsx
 import { updateErrorToast, updateToast } from '../lib/services/ToastService';
 import { FormCard } from '../components/FormCard';
-import ArgumentError from '../lib/errors/ArgumentError';
-import { TwoFactorLogin } from './TwoFactorAuthentication/TwoFactorLogin';
 
 type Inputs = {
   email: string,
@@ -16,8 +14,8 @@ type Inputs = {
 };
 
 export const Login = () => {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>();
-  const { login, user, logout, loggedIn} = useAuth();
+  const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+  const { login} = useAuth();
   const [disableSubmit, setDisableSubmit] = useState(false);
   const navigate = useNavigate();
 
@@ -26,11 +24,11 @@ export const Login = () => {
   // }
 
   const onSubmit: SubmitHandler<Inputs> = async (formData) => {
-
+    setDisableSubmit(true);
     const id = toast.loading("Een moment geduld...")
 
     try {
-      await login(formData.email, formData.password);
+      await login(formData.email, formData.password, '');
 
 
       updateToast(id, "Succesvol ingelogd",  'success', true);
@@ -52,6 +50,9 @@ export const Login = () => {
 
       updateErrorToast(id);
     }
+
+    setDisableSubmit(false);
+
   };
 
   const onError = () => {

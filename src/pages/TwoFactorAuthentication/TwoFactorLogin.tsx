@@ -14,7 +14,7 @@ type Inputs = {
 
 export const TwoFactorLogin = () => {
     const location = useLocation();
-    const locationState = (location.state as {emailt : string, password: string});
+    const locationState = (location.state as {email : string, password: string});
 
     const{login} = useAuth();
     const [disableSubmit, setDisableSubmit] = useState(false);

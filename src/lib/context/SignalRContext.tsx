@@ -23,13 +23,9 @@ export const SignalRProvider = (props: Props) => {
 
 
     useEffect(() => {
-        establishConnection();
-    });
-
-    useEffect(() => {
     if(connection) {
         try {
-        connection.start().then(() => {
+            connection.start();
             // connection?.on("FlashAlert", (message:string, type:string) => {
             // try {
             //     toast[type](message);
@@ -46,9 +42,9 @@ export const SignalRProvider = (props: Props) => {
             // console.log(message);
             // });
         
-        });
         } catch (error) {
-        
+            // Connectie brookey
+            throw Error();
         }
     }
 

@@ -5,6 +5,7 @@ import { Login } from "../../pages/Login";
 import { Register } from "../../pages/Register";
 import { EnableTwoFactor } from "../../pages/TwoFactorAuthentication/EnableTwoFactor";
 import { TwoFactorLogin } from "../../pages/TwoFactorAuthentication/TwoFactorLogin";
+import { Lobby } from "../../pages/Lobby/Lobby";
 
 export const getRoutes = (user: UserInfo) => {
   let routeContent = <></>;
@@ -24,6 +25,7 @@ export const getRoutes = (user: UserInfo) => {
         routeContent = 
           <>
                 <Route path="" element={<LobbyJoin/>} />
+                <Route path="/lobby" element={<Lobby/>} />
           </>;
         return routeContent;
     }
