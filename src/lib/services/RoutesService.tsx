@@ -1,6 +1,6 @@
 import { Route } from "react-router-dom";
 import { UserInfo } from "../interfaces/UserInfo";
-import { Lobby } from "../../pages/Lobby";
+import { LobbyJoin } from "../../pages/Lobby/LobbyJoin";
 import { Login } from "../../pages/Login";
 import { Register } from "../../pages/Register";
 import { EnableTwoFactor } from "../../pages/TwoFactorAuthentication/EnableTwoFactor";
@@ -23,7 +23,7 @@ export const getRoutes = (user: UserInfo) => {
         // Login 2FA routes only
         routeContent = 
           <>
-                <Route path="" element={<Lobby/>} />
+                <Route path="" element={<LobbyJoin/>} />
           </>;
         return routeContent;
     }
