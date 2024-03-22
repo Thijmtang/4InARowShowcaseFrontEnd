@@ -1,6 +1,8 @@
+import { PlayerTypes } from "../enums/PlayerTypes";
+
 export type BoardCell = {
-    value: number,
-    x: number,
-    y: number,
-    new: boolean,
+    Value: PlayerTypes,
+    X: number,
+    Y: number,
+    New: boolean,
   }

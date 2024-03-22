@@ -4,7 +4,7 @@ import { GameLobby } from '../../lib/interfaces/GameLobby';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSignalR } from '../../lib/context/SignalRContext';
-import {  GamePlayer, GamePlayers } from '../../lib/interfaces/GamePlayer';
+import {  GamePlayers } from '../../lib/interfaces/GamePlayer';
 import { toast } from 'react-toastify';
 import { PlayerTypes } from "../../lib/enums/PlayerTypes";
 
@@ -12,10 +12,10 @@ export const Lobby = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const locationState = (location.state as {gameLobby : GameLobby});
-  const {connection} = useSignalR();
+  const {connection, isConnectionValid} = useSignalR();
 
   // Connection is no longer valid
-  if(!locationState.gameLobby || !connection?.state) {
+  if(!locationState.gameLobby || !isConnectionValid) {
     navigate('/');
   }
 
@@ -26,12 +26,12 @@ export const Lobby = () => {
 
 
   useEffect(() => {
+    // Update lobby when someone leaves,
     connection?.on('UpdatePlayerList', (players: string) => {
-      console.log(JSON.parse(players))
       setPlayers(JSON.parse(players));
     });
 
-    connection?.on('AllowGameStart', (players: string) => {
+    connection?.on('AllowGameStart', () => {
       setDisableSubmit(false);
     });
 
@@ -43,12 +43,8 @@ export const Lobby = () => {
           gameLobby: JSON.parse(lobby),
         },
       })
-
     });
 
-    
-
-    // Update lobby when someone leaves,
   }, [connection]);
 
 
@@ -86,6 +82,12 @@ export const Lobby = () => {
   },[players])
 
   const startGame = () => {
+    var currentPlayer = players[connection?.connectionId];
+    if(players[connection?.connectionId].PlayerType != PlayerTypes.Player1) {
+      toast.error("Jij bent niet de lobby leader!")
+      return;
+    }
+
     connection?.send("StartGame", gameLobby.Code);
   }
 

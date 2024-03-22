@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FormCard } from '../../components/FormCard';
 import { Button, Form } from 'react-bootstrap';
 import { useAuth } from '../../lib/context/AuthContext';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { standardErrorMessage, updateErrorToast, updateToast } from '../../lib/services/ToastService';
+import { updateErrorToast, updateToast } from '../../lib/services/ToastService';
 
 
 type Inputs = {
@@ -18,7 +18,7 @@ export const TwoFactorLogin = () => {
 
     const{login} = useAuth();
     const [disableSubmit, setDisableSubmit] = useState(false);
-    const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+    const { register, handleSubmit } = useForm<Inputs>();
 
     const navigate = useNavigate();
 
@@ -33,7 +33,6 @@ export const TwoFactorLogin = () => {
         setDisableSubmit(true);
 
         const id = toast.loading("Een moment geduld...")
-        console.log(formData.VerificationToken);
         try {
 
             await login(email, password, formData.VerificationToken);

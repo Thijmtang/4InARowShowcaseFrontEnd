@@ -17,9 +17,9 @@ interface Props {
 }
 
 function GameBoardCell(props:Props) {
-    const positionX = props.cell.x;
-    const positionY = props.cell.y;
-    const player = props.cell.value;
+    const positionX = props.cell.X;
+    const positionY = props.cell.Y;
+    const player = props.cell.Value;
 
     const [cssClass, setCssClass] = useState("");
     // const [forecasts, setForecasts] = useState<Forecast[]>();
@@ -27,10 +27,7 @@ function GameBoardCell(props:Props) {
     
     useEffect(() => {
         // Cells can only be placed by player 1 or 2
-        if(!validValue()) {
-            setCssClass("");
-            return;
-        }
+      
 
         let animation = '';
         if(props.animation) {

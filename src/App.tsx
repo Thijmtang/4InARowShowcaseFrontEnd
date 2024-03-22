@@ -1,5 +1,5 @@
 import './assets/App.scss';
-import { ToastContainer, toast } from 'react-toastify';
+import { Flip, ToastContainer, toast } from 'react-toastify';
 import { RoutesComponent } from './components/RoutesComponent';
 import { useEffect } from 'react';
 import { useAuth } from './lib/context/AuthContext';
@@ -14,13 +14,13 @@ function App() {
         // On SignalR websocket connection, global events
         connection?.on("FlashAlert", (message:string, type:string) => {
             try {
-                console.log(message);
               toast[type](message);
             } catch (error) {
               toast.error(standardErrorMessage);
         }});
     
-    }, [connection])
+
+    }, [connection]);
 
 
     useEffect(() => {
@@ -30,7 +30,10 @@ function App() {
     
     return (
         <div className="container">
-            <ToastContainer />
+            <ToastContainer 
+            autoClose={1500}
+            transition={Flip}
+            />
             <RoutesComponent />
         </div>
     );

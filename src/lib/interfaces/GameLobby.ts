@@ -1,13 +1,12 @@
 import { GameStatus } from "../enums/GameStatus";
 import { BoardCell } from "./BoardCell";
-import { GamePlayer, GamePlayers } from "./GamePlayer";
+import { GamePlayers } from "./GamePlayer";
 
 export interface GameLobby {
-    // status: // enum,
     CurrentPlayerTurn: string,
+    Winner: string,
     GameField: BoardCell[],
     Status: GameStatus,
     Code: string,
     Players: GamePlayers,
-
 }

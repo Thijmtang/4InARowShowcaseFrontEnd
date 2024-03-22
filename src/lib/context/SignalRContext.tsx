@@ -4,6 +4,7 @@ import * as signalR from "@microsoft/signalr";
 interface SignalRContextType {
     connection: signalR.HubConnection | undefined;
     establishConnection: () => void; 
+    isConnectionValid: () => boolean
 }
 
 
@@ -23,35 +24,40 @@ export const SignalRProvider = (props: Props) => {
 
 
     useEffect(() => {
-    if(connection) {
-        try {
-            connection.start();
-        } catch (error) {
-            // Connectie brookey
-            throw Error();
+        if(connection) {
+            try {
+                connection.start();
+            } catch (error) {
+                // Connectie brookey
+                throw Error();
+            }
         }
-    }
 
-    return () => {
-        connection?.stop();
-    };
-
-
+        return () => {
+            connection?.stop();
+        };
     },[connection]);
     
+    //@todo env of vite 
     const establishConnection = () => {
         const con = new signalR.HubConnectionBuilder()
         .withUrl("https://localhost:7161/hub")
-        .withAutomaticReconnect()
         .build();
     
         setConnection(con);
-      };  
+    };  
+
+    const isConnectionValid = () => {
+        return connection?.state === signalR.HubConnectionState.Connected
+    }
+
 
     const authContextValue: SignalRContextType = {
         connection,
         establishConnection,
-      };
+        isConnectionValid
+    };
+
     return <SignalRContext.Provider value={authContextValue}>{props.children}</SignalRContext.Provider>;
 
 };
