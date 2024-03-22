@@ -4,8 +4,9 @@ import { GameLobby } from '../../lib/interfaces/GameLobby';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSignalR } from '../../lib/context/SignalRContext';
-import {  GamePlayers } from '../../lib/interfaces/GamePlayer';
+import {  GamePlayer, GamePlayers } from '../../lib/interfaces/GamePlayer';
 import { toast } from 'react-toastify';
+import { PlayerTypes } from "../../lib/enums/PlayerTypes";
 
 export const Lobby = () => {
   const navigate = useNavigate();
@@ -24,9 +25,9 @@ export const Lobby = () => {
   const [playerNames, setPlayerNames] = useState<string[]>();
 
 
-
   useEffect(() => {
     connection?.on('UpdatePlayerList', (players: string) => {
+      console.log(JSON.parse(players))
       setPlayers(JSON.parse(players));
     });
 
@@ -34,16 +35,47 @@ export const Lobby = () => {
       setDisableSubmit(false);
     });
 
+    connection?.on('RenderField', (lobby: string) => {
+      setDisableSubmit(false);
+
+      navigate('/game', {
+        state: {
+          gameLobby: JSON.parse(lobby),
+        },
+      })
+
+    });
+
+    
+
     // Update lobby when someone leaves,
   }, [connection]);
 
 
   useEffect(() => {
     const playerNames = [];
+    let player1;
+    let player2;
+
     for (const key in players) {
       const player = players[key];
-      playerNames.push(`${player.Username}`);
+
+      if(player.PlayerType === PlayerTypes.Player1) {
+        player1 = player;
+        continue;
+      }
+      player2 = player;
     }
+
+    if(player1) {
+      playerNames.push(`${player1?.Username}`);
+    }
+    if(player2) {
+      playerNames.push(`${player2?.Username}`);
+    }
+
+
+
 
     if(playerNames.length != 2) {
       setDisableSubmit(true);
@@ -51,8 +83,11 @@ export const Lobby = () => {
 
     setPlayerNames(playerNames);
 
-    console.log(playerNames);
   },[players])
+
+  const startGame = () => {
+    connection?.send("StartGame", gameLobby.Code);
+  }
 
   const CopyCodeClipBoard = () => {
     navigator.clipboard.writeText(gameLobby.Code);
@@ -75,7 +110,7 @@ export const Lobby = () => {
         </div>
 
         <div className="footer">
-          <Button variant={"success" + (disableSubmit ? ' ' + 'disabled' : '')} type="submit">
+          <Button variant={"success" + (disableSubmit ? ' ' + 'disabled' : '')} type="submit" onClick={() => startGame()}>
               Start
           </Button>
         </div>

@@ -15,7 +15,6 @@ export const LobbyJoin = () => {
 
   // const {user} = useAuth();
   const [action, setAction] = useState('');
-  // const [connection, setConnection] = useState<signalR.HubConnection>();
   const navigate = useNavigate();
   const {connection, establishConnection} = useSignalR();
   useEffect(() => {

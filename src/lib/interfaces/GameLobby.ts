@@ -4,7 +4,7 @@ import { GamePlayer, GamePlayers } from "./GamePlayer";
 
 export interface GameLobby {
     // status: // enum,
-    CurrentPlayer: GamePlayer,
+    CurrentPlayerTurn: string,
     GameField: BoardCell[],
     Status: GameStatus,
     Code: string,

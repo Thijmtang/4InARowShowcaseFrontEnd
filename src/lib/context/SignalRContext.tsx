@@ -26,22 +26,6 @@ export const SignalRProvider = (props: Props) => {
     if(connection) {
         try {
             connection.start();
-            // connection?.on("FlashAlert", (message:string, type:string) => {
-            // try {
-            //     toast[type](message);
-            // } catch (error) {
-            //     toast.error(standardErrorMessage);
-            // }
-            // });
-        
-            // connection?.on("Send", (message:string, type:string) => {
-            // console.log(message);
-            // });
-
-            // connection?.on("RedirectToLobby", (message:string, type:string) => {
-            // console.log(message);
-            // });
-        
         } catch (error) {
             // Connectie brookey
             throw Error();

@@ -11,10 +11,10 @@ function PlayerBadge(props: Props) {
     let color = '';
 
     switch(props.playerType) {
-        case PlayerTypes.player1:
+        case PlayerTypes.Player1:
             color = 'warning'
             break;
-        case PlayerTypes.player2:
+        case PlayerTypes.Player2:
             color = 'danger'
         break;
     }

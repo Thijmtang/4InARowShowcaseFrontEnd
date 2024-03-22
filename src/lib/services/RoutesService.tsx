@@ -6,6 +6,7 @@ import { Register } from "../../pages/Register";
 import { EnableTwoFactor } from "../../pages/TwoFactorAuthentication/EnableTwoFactor";
 import { TwoFactorLogin } from "../../pages/TwoFactorAuthentication/TwoFactorLogin";
 import { Lobby } from "../../pages/Lobby/Lobby";
+import GameBoard4InARow from "../../pages/GameBoard4InARow";
 
 export const getRoutes = (user: UserInfo) => {
   let routeContent = <></>;
@@ -26,6 +27,7 @@ export const getRoutes = (user: UserInfo) => {
           <>
                 <Route path="" element={<LobbyJoin/>} />
                 <Route path="/lobby" element={<Lobby/>} />
+                <Route path="/game" element={<GameBoard4InARow/>} />
           </>;
         return routeContent;
     }
