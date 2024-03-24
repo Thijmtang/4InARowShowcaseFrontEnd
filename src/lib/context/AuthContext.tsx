@@ -1,6 +1,6 @@
 // AuthContext.js
-import React, { createContext, useState, useContext, useMemo } from 'react';
-import {login as loginAPI, signOut as signOutAPI, getUserInfo} from '../../lib/services/AuthService';
+import React, { createContext, useState, useContext } from 'react';
+import {login as loginAPI, signOut as signOutAPI, getUserInfo} from '../services/AuthApiService';
 import { UserInfo } from '../interfaces/UserInfo';
 import ArgumentError from '../errors/ArgumentError';
 
@@ -10,7 +10,8 @@ import ArgumentError from '../errors/ArgumentError';
 
 
 interface AuthContextType {
-    user: UserInfo;
+    user: UserInfo | null;
+    userHasRole: (user: UserInfo, roleName: string) => boolean;
     loggedIn: boolean;
     login: (email: string, password: string, twoFactorAuthcode: string) => void;
     logout: () => void;
@@ -23,10 +24,11 @@ interface Props {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext) as AuthContextType;
 
 export const AuthProvider = ( props: Props) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<UserInfo|null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
     
   const login = async (email: string, password: string, twoFactorAuthcode: string = '') => {
@@ -50,7 +52,6 @@ export const AuthProvider = ( props: Props) => {
       setUser(null);
       throw new ArgumentError("2FA code is niet valide");
     }
-
   };
 
   const logout = async () => {
@@ -73,9 +74,13 @@ export const AuthProvider = ( props: Props) => {
     }
   }
 
+  const userHasRole = (user: UserInfo, roleName: string) => {
+    return user.roles.find(role => role === roleName) != null;
+  }
 
   const authContextValue: AuthContextType = {
     user,
+    userHasRole,
     login,
     loggedIn,
     logout,

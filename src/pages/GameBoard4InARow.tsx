@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import '../assets/GameBoard4InARow.scss';
 
 
@@ -5,11 +6,12 @@ import { useEffect, useState } from 'react'
 import GameBoardCell from '../components/4InARow/GameBoardCell';
 import PlayerBadge from '../components/4InARow/PlayerBadge';
 import { BoardCell } from '../lib/interfaces/BoardCell';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { GameLobby } from '../lib/interfaces/GameLobby';
 import { useSignalR } from '../lib/context/SignalRContext';
 import { GamePlayer } from '../lib/interfaces/GamePlayer';
 import { Button, Modal } from 'react-bootstrap';
+import { PlayerTypes } from '../lib/enums/PlayerTypes';
 
 function GameBoard4InARow() {
   const navigate = useNavigate();
@@ -17,8 +19,9 @@ function GameBoard4InARow() {
   const locationState = (location.state as {gameLobby : GameLobby});
 
   const {connection, isConnectionValid} = useSignalR();
+
   if(locationState === null || !isConnectionValid()) {
-    navigate('/');
+    return <Navigate to="/" replace={true} />;
   }
   
   const [gameLobby, setGameLobby] = useState<GameLobby>(locationState?.gameLobby);
@@ -79,7 +82,7 @@ function GameBoard4InARow() {
       <div className="header">
         <div>
         <h1>
-          <b>Huidige beurt</b> <PlayerBadge playerType={currentPlayer?.PlayerType}>{currentPlayer?.Username}({currentPlayer.ConnectionId == connection?.connectionId ? 'Jij': 'Tegenstander'})</PlayerBadge> 
+          <b>Huidige beurt</b> <PlayerBadge playerType={currentPlayer?.PlayerType}>{currentPlayer?.Username} ({currentPlayer.ConnectionId == connection?.connectionId ? 'Jij': 'Tegenstander'})</PlayerBadge> 
         </h1>
         </div>
       </div>
@@ -98,7 +101,7 @@ function GameBoard4InARow() {
           </Modal.Body>        
           <Modal.Footer>
             <Button variant="secondary" onClick={() => navigate('/')}>Terug naar lobbies</Button>
-            <Button variant="primary" onClick={() => startGame()}>Nog emmm keertje spielen</Button>
+            <Button variant="primary" disabled={gameLobby.Players[connection?.connectionId].PlayerType === PlayerTypes.Player2} onClick={() => startGame()}>Nog emmm keertje spielen</Button>
           </Modal.Footer>
       </Modal>
 

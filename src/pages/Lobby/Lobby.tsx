@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { FormCard } from '../../components/FormCard'
 import { Button } from 'react-bootstrap'
 import { GameLobby } from '../../lib/interfaces/GameLobby';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSignalR } from '../../lib/context/SignalRContext';
 import {  GamePlayers } from '../../lib/interfaces/GamePlayer';
@@ -15,8 +16,8 @@ export const Lobby = () => {
   const {connection, isConnectionValid} = useSignalR();
 
   // Connection is no longer valid
-  if(!locationState.gameLobby || !isConnectionValid) {
-    navigate('/');
+  if(!locationState || !isConnectionValid) {
+    return <Navigate to="/" replace={true} />;
   }
 
   const gameLobby = locationState.gameLobby;
@@ -38,14 +39,16 @@ export const Lobby = () => {
     connection?.on('RenderField', (lobby: string) => {
       setDisableSubmit(false);
 
+      // Redirect to game
       navigate('/game', {
         state: {
           gameLobby: JSON.parse(lobby),
         },
-      })
+      });
+
     });
 
-  }, [connection]);
+  }, [connection, navigate]);
 
 
   useEffect(() => {
@@ -82,8 +85,8 @@ export const Lobby = () => {
   },[players])
 
   const startGame = () => {
-    var currentPlayer = players[connection?.connectionId];
-    if(players[connection?.connectionId].PlayerType != PlayerTypes.Player1) {
+    const currentPlayer = players[connection?.connectionId];
+    if(currentPlayer.PlayerType != PlayerTypes.Player1) {
       toast.error("Jij bent niet de lobby leader!")
       return;
     }

@@ -4,6 +4,8 @@ import { Button, Form } from 'react-bootstrap'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSignalR } from '../../lib/context/SignalRContext';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { standardErrorMessage } from '../../lib/services/ToastService';
 
 type Inputs = {
   lobbycode: string,
@@ -15,7 +17,7 @@ export const LobbyJoin = () => {
   // const {user} = useAuth();
   const [action, setAction] = useState('');
   const navigate = useNavigate();
-  const {connection, establishConnection} = useSignalR();
+  const {connection, establishConnection, isConnectionValid} = useSignalR();
 
   useEffect(() => {
     establishConnection();
@@ -40,6 +42,14 @@ export const LobbyJoin = () => {
   }
   
   const onSubmit: SubmitHandler<Inputs> = async (formData: Inputs) => {
+    if(!isConnectionValid()) {
+      try {
+        establishConnection();
+      } catch (error) {
+          toast.error(standardErrorMessage);        
+      }
+    }
+    
     if(action === 'join') {
         joinLobby(formData.lobbycode);
         return;
