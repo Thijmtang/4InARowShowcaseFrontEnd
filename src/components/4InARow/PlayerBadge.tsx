@@ -1,6 +1,6 @@
 import React from 'react'
 import Badge from 'react-bootstrap/Badge';
-import { PlayerTypes } from '../enums/PlayerTypes';
+import { PlayerTypes } from '../../lib/enums/PlayerTypes';
 
 interface Props {
     children: React.ReactNode;
@@ -11,14 +11,15 @@ function PlayerBadge(props: Props) {
     let color = '';
 
     switch(props.playerType) {
-        case PlayerTypes.player1:
+        case PlayerTypes.Player1:
             color = 'warning'
             break;
-        case PlayerTypes.player2:
+        case PlayerTypes.Player2:
             color = 'danger'
         break;
     }
 
+    
     return (
     <Badge pill bg={color}>{props.children}</Badge>
     );

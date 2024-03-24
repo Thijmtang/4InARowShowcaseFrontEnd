@@ -1,5 +1,5 @@
-export interface Player {
+export type Player = {
     username: string;
     playerNumber: number;
-  }
+}
   

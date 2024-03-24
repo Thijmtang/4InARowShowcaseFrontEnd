@@ -1,7 +1,6 @@
 .board-container {
     transition: .2s ease-in-out;
     overflow: hidden;
-    margin-top: 40px;
     background-color: #F6F6F6;
     border-radius: 5px;
     justify-content: center;
@@ -15,7 +14,7 @@
         grid-template-columns: repeat(8, 1fr);
         grid-template-rows: repeat(8, 1fr);
         justify-content: space-evenly;
-        gap: 10px;
+        gap: 1px;
         max-height: 754px;
         aspect-ratio: 1/1;
     
@@ -26,7 +25,10 @@
             height: 100%;
             border-radius: 100%;
             position: relative;
+
             &::after{
+                cursor: pointer;
+
                 top: 0;
                 left: 0;
 
@@ -41,7 +43,6 @@
 
             }
 
-
             &.player-1{
                 &::after {
                     background-color: #FFC107;
@@ -55,21 +56,16 @@
             }
             &.new {
                 &::after{
-                    // transition: .2s;
-                    animation: .5s drop ease-in-out;
-                    // background-color: purple!important;
-                    
+                    animation: .4s drop ease-in-out;
                 }
             }
-
-
         }
     }
-    
 }
 
-
 @keyframes drop {
-    from {top: -500%;}
-    to {top: 0;}
+    0% {top: -800%; scale: 0.4;}
+    50% {top: 0%;  scale: 1.1}
+    75% {top: -30%; scale:  0.9;}
+    100% {top: 0; scale: 1;}
   }

@@ -1,58 +1,42 @@
-import { useEffect, useState } from 'react';
 import './assets/App.scss';
-import GameBoard4InARow from './components/GameBoard4InARow';
-
-interface Forecast {
-    date: string;
-    temperatureC: number;
-    temperatureF: number;
-    summary: string;
-}
+import { Flip, ToastContainer, toast } from 'react-toastify';
+import { RoutesComponent } from './components/RoutesComponent';
+import { useEffect } from 'react';
+import { useAuth } from './lib/context/AuthContext';
+import { useSignalR } from './lib/context/SignalRContext';
+import { standardErrorMessage } from './lib/services/ToastService';
 
 function App() {
-    // const [forecasts, setForecasts] = useState<Forecast[]>();
+    const {refreshUser} = useAuth();
+    const {connection} = useSignalR();
 
-    // useEffect(() => {
-    //     populateWeatherData();
-    // }, []);
+    useEffect(() => {
+        // On SignalR websocket connection, global events
+        connection?.on("FlashAlert", (message:string, type:string) => {
+            try {
+              toast[type](message);
+            } catch (error) {
+              toast.error(standardErrorMessage);
+        }});
+    
 
-    //     const contents = forecasts === undefined
-    //     ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-    //     : <table className="table table-striped" aria-labelledby="tabelLabel">
-    //         <thead>
-    //             <tr>
-    //                 <th>Date</th>
-    //                 <th>Temp. (C)</th>
-    //                 <th>Temp. (F)</th>
-    //                 <th>Summary</th>
-    //             </tr>
-    //         </thead>
-    //         <tbody>
-    //             {forecasts.map(forecast =>
-    //                 <tr key={forecast.date}>
-    //                     <td>{forecast.date}</td>
-    //                     <td>{forecast.temperatureC}</td>
-    //                     <td>{forecast.temperatureF}</td>
-    //                     <td>{forecast.summary}</td>
-    //                 </tr>
-    //             )}
-    //         </tbody>
-    //     </table>;
+    }, [connection]);
 
+
+    useEffect(() => {
+        refreshUser();
+    }, [location]);
+
+    
     return (
-        <GameBoard4InARow />
-        // <div>
-            // {/* <h1 id="tabelLabel">Weather forecast</h1> */}
-            // {/* <p>This component demonstrates fetching data from the server.</p> */}
-            // {/* {contents} */}
-        // </div>
+        <div className="container">
+            <ToastContainer 
+            autoClose={1500}
+            transition={Flip}
+            />
+            <RoutesComponent />
+        </div>
     );
-
-    async function populateWeatherData() {
-        // const response = await fetch('weatherforecast');
-        // const data = await response.json();
-        // setForecasts(data);
-    }
 }
 
 export default App;
