@@ -1,4 +1,4 @@
 export enum PlayerTypes {
-    player1 = 1,
-    player2 = 2,
+    Player1 = 1,
+    Player2 = 2,
 }

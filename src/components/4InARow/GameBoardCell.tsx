@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { BoardCell } from '../../lib/interfaces/BoardCell';
 import axios from 'axios';
+import { useSignalR } from '../../lib/context/SignalRContext';
 
 enum Status {
     inactive,
@@ -11,24 +12,22 @@ enum Status {
 interface Props {
     animation: boolean,
     cell: BoardCell,
-    updateField: CallableFunction
+    updateField: CallableFunction,
+    clickEvent: (x: number) => void
 }
 
 function GameBoardCell(props:Props) {
-    const positionX = props.cell.x;
-    const positionY = props.cell.y;
-    const player = props.cell.value;
-    
+    const positionX = props.cell.X;
+    const positionY = props.cell.Y;
+    const player = props.cell.Value;
+
     const [cssClass, setCssClass] = useState("");
     // const [forecasts, setForecasts] = useState<Forecast[]>();
 
     
     useEffect(() => {
         // Cells can only be placed by player 1 or 2
-        if(!validValue()) {
-            setCssClass("");
-            return;
-        }
+      
 
         let animation = '';
         if(props.animation) {
@@ -39,18 +38,18 @@ function GameBoardCell(props:Props) {
     });
 
     const clickEvent = async () => {
-        const formData = new FormData();
-        formData.append("X", positionX.toString());
-        formData.append("Y", positionY.toString());
-        formData.append("Value", '2');
-        formData.append("New", 'true');
-
-        axios
-            .post('weatherforecast', formData, 
-            )
-            .then(({data}) => {
-                props.updateField(data);
-            });
+        // const formData = new FormData();
+        // formData.append("X", positionX.toString());
+        // formData.append("Y", positionY.toString());
+        // formData.append("Value", '2');
+        // formData.append("New", 'true');
+        props.clickEvent(positionX)
+        // axios
+        //     .post('weatherforecast', formData, 
+        //     )
+        //     .then(({data}) => {
+        //         props.updateField(data);
+        //     });
 
     };  
 

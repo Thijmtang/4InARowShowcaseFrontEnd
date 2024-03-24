@@ -1,80 +1,108 @@
 import '../assets/GameBoard4InARow.scss';
 
 
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import GameBoardCell from '../components/4InARow/GameBoardCell';
 import PlayerBadge from '../components/4InARow/PlayerBadge';
-import {Player} from '../lib/interfaces/Player';
 import { BoardCell } from '../lib/interfaces/BoardCell';
-import { toast } from 'react-toastify';
-import { useAuth } from '../lib/context/AuthContext';
-import axios from 'axios';
-import { Button } from 'react-bootstrap';
-import {signOut} from '../lib/services/AuthService';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { GameLobby } from '../lib/interfaces/GameLobby';
+import { useSignalR } from '../lib/context/SignalRContext';
+import { GamePlayer } from '../lib/interfaces/GamePlayer';
+import { Button, Modal } from 'react-bootstrap';
 
 function GameBoard4InARow() {
-  const { user, isLoggedIn} = useAuth();
-  console.log(user, isLoggedIn);
-  
-  // @todo update realtime
-  const [currentPlayer, setCurrentPlayer] = useState<Player>({playerNumber: 1, username: "Speler"});
+  const navigate = useNavigate();
+  const location = useLocation();
+  const locationState = (location.state as {gameLobby : GameLobby});
 
-  const [field, setField] = useState<BoardCell[]>([
-    {"value": 1, "x": 0, "y": 0, new:true}, {"value": 0, "x": 1, "y": 0}, {"value": 0, "x": 2, "y": 0}, {"value": 0, "x": 3, "y": 0}, {"value": 0, "x": 4, "y": 0}, {"value": 0, "x": 5, "y": 0}, {"value": 0, "x": 6, "y": 0}, {"value": 0, "x": 7, "y": 0},
-    {"value": 0, "x": 0, "y": 1}, {"value": 0, "x": 1, "y": 1}, {"value": 0, "x": 2, "y": 1}, {"value": 0, "x": 3, "y": 1}, {"value": 0, "x": 4, "y": 1}, {"value": 0, "x": 5, "y": 1}, {"value": 0, "x": 6, "y": 1}, {"value": 0, "x": 7, "y": 1},
-    {"value": 0, "x": 0, "y": 2}, {"value": 0, "x": 1, "y": 2}, {"value": 0, "x": 2, "y": 2}, {"value": 0, "x": 3, "y": 2}, {"value": 0, "x": 4, "y": 2}, {"value": 0, "x": 5, "y": 2}, {"value": 0, "x": 6, "y": 2}, {"value": 0, "x": 7, "y": 2},
-    {"value": 0, "x": 0, "y": 3}, {"value": 0, "x": 1, "y": 3}, {"value": 0, "x": 2, "y": 3}, {"value": 0, "x": 3, "y": 3}, {"value": 0, "x": 4, "y": 3}, {"value": 0, "x": 5, "y": 3}, {"value": 0, "x": 6, "y": 3}, {"value": 0, "x": 7, "y": 3},
-    {"value": 0, "x": 0, "y": 4}, {"value": 0, "x": 1, "y": 4}, {"value": 0, "x": 2, "y": 4}, {"value": 0, "x": 3, "y": 4}, {"value": 0, "x": 4, "y": 4}, {"value": 0, "x": 5, "y": 4}, {"value": 0, "x": 6, "y": 4}, {"value": 0, "x": 7, "y": 4},
-    {"value": 2, "x": 0, "y": 5, "new": true}, {"value": 0, "x": 1, "y": 5}, {"value": 0, "x": 2, "y": 5}, {"value": 0, "x": 3, "y": 5}, {"value": 0, "x": 4, "y": 5}, {"value": 0, "x": 5, "y": 5}, {"value": 0, "x": 6, "y": 5}, {"value": 0, "x": 7, "y": 5},
-    {"value": 2, "x": 0, "y": 6}, {"value": 0, "x": 1, "y": 6}, {"value": 0, "x": 2, "y": 6}, {"value": 0, "x": 3, "y": 6}, {"value": 0, "x": 4, "y": 6}, {"value": 0, "x": 5, "y": 6}, {"value": 0, "x": 6, "y": 6}, {"value": 0, "x": 7, "y": 6},
-    {"value": 1, "x": 0, "y": 7}, {"value": 1, "x": 1, "y": 7}, {"value": 0, "x": 2, "y": 7}, {"value": 0, "x": 3, "y": 7}, {"value": 0, "x": 4, "y": 7}, {"value": 0, "x": 5, "y": 7}, {"value": 0, "x": 6, "y": 7}, {"value": 2, "x": 7, "y": 7, new: true},
-  ]);
+  const {connection, isConnectionValid} = useSignalR();
+  if(locationState === null || !isConnectionValid()) {
+    navigate('/');
+  }
+  
+  const [gameLobby, setGameLobby] = useState<GameLobby>(locationState?.gameLobby);
+  const [showModal, setShowModal] = useState(false);
+
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => setShowModal(true);
+
+  const [currentPlayer, setCurrentPlayer] = useState<GamePlayer>(gameLobby?.Players[gameLobby?.CurrentPlayerTurn]);
+  const [winner, setWinner] = useState<GamePlayer>(gameLobby?.Players[gameLobby?.Winner]);
+
+  const [field, setField] = useState<BoardCell[]>(gameLobby?.GameField);
+
+  // ClickCell
+  useEffect(() => {
+    connection?.on('RenderField', (lobby: string) => {
+      setGameLobby(JSON.parse(lobby));
+    });
+
+    connection?.on('ShowChoiceModal', () => {
+      // setGameLobby(JSON.parse(lobby));
+      handleShow();
+    });
+
+    connection?.on('Endlobby', () => {
+      navigate('/');
+    });
+
+
+    connection?.on('StartGame', () => {
+      handleClose();
+    });
+    // Update lobby when someone leaves,
+  }, [connection]);
 
   useEffect(() => {
-    getGameField();
-  }, []);
+    setCurrentPlayer(gameLobby.Players[gameLobby.CurrentPlayerTurn]);
+    setWinner(gameLobby.Players[gameLobby?.Winner]);
 
-  const rows: JSX.Element[] = [];
+      setField(gameLobby.GameField);
+  }, [gameLobby]);
+
+  const placeCell = (x: number) => {
+    // It is not the users turn.
+    if(connection?.connectionId != gameLobby.CurrentPlayerTurn) {
+      return;
+    }
+
+    connection?.send("ClickCell", gameLobby.Code, x);
+  }
   
-  field?.forEach((column, i) => {
-    const animation = column?.new === true;
-    rows.push(<GameBoardCell key={i}  animation={animation} cell={column} updateField={setField}/>);
-  });
-
-  // for (let i = 0; i < 64; i++) {
-      // note: we are adding a key prop here to allow react to uniquely identify each
-      // element in this array. see: https://reactjs.org/docs/lists-and-keys.html
-      // rows.push(<GameBoardCell key={i}/>);
-  // }
-  const logOut = (async () => {
-    await signOut();
-  });
+  const startGame = () => {
+    connection?.send("StartGame", gameLobby.Code);
+  }
 
   return (
     <div className="board-container">
-      <Button onClick={logOut}> test</Button>
       <div className="header">
         <div>
         <h1>
-          <b>Huidige beurt</b> <PlayerBadge playerType={currentPlayer?.playerNumber}>{currentPlayer?.username}</PlayerBadge> 
+          <b>Huidige beurt</b> <PlayerBadge playerType={currentPlayer?.PlayerType}>{currentPlayer?.Username}({currentPlayer.ConnectionId == connection?.connectionId ? 'Jij': 'Tegenstander'})</PlayerBadge> 
         </h1>
         </div>
       </div>
       <div className='board'>
-        {rows}
+        {field.map((column, i) => {
+          return <GameBoardCell key={i}  animation={column?.New} cell={column} updateField={setField} clickEvent={placeCell} />
+        })}
       </div>
-    </div>
- 
-  );
 
-  async function getGameField() {
-    // const response = await axios.get('https://localhost:7161/WeatherForecast/boeie');
-    // const data = await response.data;
+      <Modal show={showModal} >
+        <Modal.Header>
+        <Modal.Title>Het spel is afgelopen</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <p>{winner?.ConnectionId != connection?.connectionId ? 'Je hebt verloren 😓': 'Je hebt gewonnen 😀'}</p>
+          </Modal.Body>        
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => navigate('/')}>Terug naar lobbies</Button>
+            <Button variant="primary" onClick={() => startGame()}>Nog emmm keertje spielen</Button>
+          </Modal.Footer>
+      </Modal>
 
-    // console.log(data);
-    // console.log('dwa');
-  }
-
+    </div>);
 }
 
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormCard } from '../../components/FormCard'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
@@ -12,12 +12,12 @@ import { useAuth } from '../../lib/context/AuthContext';
 
 type Inputs = {
     VerificationToken: string,
-  };
+};
   
 export const EnableTwoFactor = () => {
     const{refreshUser} = useAuth();
     const [disableSubmit, setDisableSubmit] = useState(false);
-    const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+    const { register, handleSubmit } = useForm<Inputs>();
 
     const navigate = useNavigate();
 
@@ -45,7 +45,7 @@ export const EnableTwoFactor = () => {
         setDisableSubmit(true);
 
         const id = toast.loading("Een moment geduld...")
-        console.log(formData.VerificationToken);
+
         try {
             await enableTwoFactorAuthentication(formData.VerificationToken);
             await refreshUser();
@@ -63,10 +63,10 @@ export const EnableTwoFactor = () => {
   return (
     <FormCard>
         <h1>2FA inschakelen</h1>
-        <h4>Stap 1</h4>
+        <h2>Stap 1.</h2>
         <p>Scan de QR of voer handmatig de geheime code in uw gewenste authenticator app</p>
 
-        <h4>Stap 2.</h4>
+        <h2>Stap 2.</h2>
         <p>Voer de 6 digit code die verschijnt binnen uw authenticator</p>
         <div className='qr-container'>
             <QRCode

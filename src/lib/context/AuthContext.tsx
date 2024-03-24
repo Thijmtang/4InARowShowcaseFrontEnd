@@ -17,7 +17,6 @@ interface AuthContextType {
     refreshUser: () => void;
 }
 
-
 interface Props {
     children: React.ReactNode
 }
