@@ -62,7 +62,7 @@ export const EnableTwoFactor = () => {
 
   return (
     <FormCard>
-        <h1>2FA inschakelen</h1>
+        <h1 data-cy="page-title">2FA inschakelen</h1>
         <h2>Stap 1.</h2>
         <p>Scan de QR of voer handmatig de geheime code in uw gewenste authenticator app</p>
 
