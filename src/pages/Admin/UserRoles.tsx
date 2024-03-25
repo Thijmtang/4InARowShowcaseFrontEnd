@@ -33,18 +33,22 @@ export const UserRoles = () => {
   const onSubmit: SubmitHandler<Inputs> = async (formData) => {
     const id = toast.loading("Een moment geduld...");
 
-    const response = await putRolesEdit(formData.user, formData.role);
+    try {
+      const response = await putRolesEdit(formData.user, formData.role);
 
-    const data = await response?.data;
+      const data = await response?.data;
 
-    updateToast(id, "Gebruiker is succesvol aangepast", "success");
-    
-
-    if(data.status != 200) {
-      updateErrorToast(id,standardErrorMessage );
-      return;
+      console.log(response);
+      console.log(data);
+      if(response.status != 200) {
+        updateErrorToast(id,standardErrorMessage );
+        return;
+      }
+      updateToast(id, "Gebruiker is succesvol aangepast", "success");
+      } catch (error) {
+      
     }
-
+    
 
   };
   // Get users
@@ -93,9 +97,8 @@ export const UserRoles = () => {
             <Form.Select aria-label="Default select example" {...register("role", {required: true})} >
               <option hidden={true} >Selecteer een gebruiker</option>
               {roles?.map((role, index)=> {
-                return <option value={role.id} key={index}>{role.name}</option>
+                return <option value={role.name} key={index}>{role.name}</option>
               })}
- 
             </Form.Select>
 
           </Form.Group>
