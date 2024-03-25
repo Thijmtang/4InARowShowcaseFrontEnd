@@ -8,8 +8,6 @@ import { getRoutes } from '../lib/services/RoutesService'
 
 export const RoutesComponent = () => {
   const { user } = useAuth();
-
-
   const routeContent = getRoutes(user);
 
   let fallBackRoute = <LobbyJoin />;

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // @todo env variable
-const baseURL = "https://localhost:7161";
+const baseURL = "/api";
 
 const AxiosInstance = axios.create({
         baseURL: baseURL,

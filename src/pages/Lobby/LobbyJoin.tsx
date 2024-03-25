@@ -44,7 +44,8 @@ export const LobbyJoin = () => {
   const onSubmit: SubmitHandler<Inputs> = async (formData: Inputs) => {
     if(!isConnectionValid()) {
       try {
-        establishConnection();
+        await establishConnection();
+        await connection?.start();
       } catch (error) {
           toast.error(standardErrorMessage);        
       }
@@ -57,11 +58,14 @@ export const LobbyJoin = () => {
     
     createLobby(formData.lobbycode);
   };
+  const onError = () => {
+    toast.error("Vul een lobbycode in");
+  }
 
   return (
     <FormCard>
       <h1>Join een lobby</h1>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit, onError)}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Lobbycode</Form.Label>
           <Form.Control type="text" autoComplete="off" placeholder="Voer een lobbycode in" {...register("lobbycode", {required: true})} />

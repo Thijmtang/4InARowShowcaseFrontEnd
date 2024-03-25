@@ -17,7 +17,6 @@ function GameBoard4InARow() {
   const navigate = useNavigate();
   const location = useLocation();
   const locationState = (location.state as {gameLobby : GameLobby});
-
   const {connection, isConnectionValid} = useSignalR();
 
   if(locationState === null || !isConnectionValid()) {

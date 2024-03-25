@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { FormCard } from "../../components/FormCard"
-import { getRoles } from "../../lib/services/RolesApiService";
+import { getRoles, putRolesEdit } from "../../lib/services/RolesApiService";
 import { getUsers } from "../../lib/services/UserApiService";
 import { Roles } from "../../lib/interfaces/Roles";
 import { User } from "../../lib/interfaces/User";
 import {  SubmitHandler, useForm } from "react-hook-form";
-import { updateErrorToast, updateToast } from "../../lib/services/ToastService";
+import { standardErrorMessage, updateErrorToast, updateToast } from "../../lib/services/ToastService";
 import { Button, Form } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 
 type Inputs = {
@@ -30,8 +31,19 @@ export const UserRoles = () => {
   }, []);
 
   const onSubmit: SubmitHandler<Inputs> = async (formData) => {
-    // setDisableSubmit(true);
-    // const id = toast.loading("Een moment geduld...")
+    const id = toast.loading("Een moment geduld...");
+
+    const response = await putRolesEdit(formData.user, formData.role);
+
+    const data = await response?.data;
+
+    updateToast(id, "Gebruiker is succesvol aangepast", "success");
+    
+
+    if(data.status != 200) {
+      updateErrorToast(id,standardErrorMessage );
+      return;
+    }
 
 
   };
@@ -74,14 +86,24 @@ export const UserRoles = () => {
               })}
  
             </Form.Select>
-
           </Form.Group>
 
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Rol</Form.Label>
+            <Form.Select aria-label="Default select example" {...register("role", {required: true})} >
+              <option hidden={true} >Selecteer een gebruiker</option>
+              {roles?.map((role, index)=> {
+                return <option value={role.id} key={index}>{role.name}</option>
+              })}
+ 
+            </Form.Select>
+
+          </Form.Group>
 
           <Form.Group className='footer'>
           <Button variant={"success" + (disableSubmit ? ' ' + 'disabled' : '')} type="submit">
               Login
-            </Button>
+          </Button>
 
           </Form.Group>
         </Form>
