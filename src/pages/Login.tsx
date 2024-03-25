@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { useAuth } from '../lib/context/AuthContext'; // Assuming you export AuthContext from AuthContext.tsx
 import { updateErrorToast, updateToast } from '../lib/services/ToastService';
 import { FormCard } from '../components/FormCard';
+import { AxiosError } from 'axios';
 
 type Inputs = {
   email: string,
@@ -33,8 +34,11 @@ export const Login = () => {
 
       updateToast(id, "Succesvol ingelogd",  'success', true);
 
-    } catch(err) {
-      const details = err.response.data.detail;
+    } catch(error) {
+      const err = error as AxiosError
+
+      console.log(err);
+      const details = err?.response?.data?.detail;
 
       // Logged in, but requires 2FA
       if(details === 'RequiresTwoFactor') {

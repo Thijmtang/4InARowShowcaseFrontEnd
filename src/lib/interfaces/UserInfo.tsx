@@ -1,5 +1,6 @@
-export interface UserInfo {
+export type UserInfo = {
     username: string;
     twoFactorEnabled: boolean;
     roles: string[];
+    
 }

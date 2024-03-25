@@ -1,19 +1,18 @@
-import React from 'react'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../lib/context/AuthContext';
 import { updateToast, updateErrorToast } from '../lib/services/ToastService';
 import { toast } from 'react-toastify';
 
 
 function Header() {
-  const { user, loggedIn, logout} = useAuth();
-  const navigate = useNavigate();
+  const { user, logout, userHasRole} = useAuth();
   
   const logOutEvent = async () => {
-    const id = toast.loading("Een moment geduld...")
+    const id = toast.loading("Een moment geduld...");
+    
     try {
       await logout();
       updateToast(id, "Uitgelogd",  'success', true);
@@ -30,12 +29,21 @@ function Header() {
       <NavLink to={"/login"} className='nav-link'>Login</NavLink>
     </>;
   } else {
-    navLinks =  <button className='nav-link' onClick={logOutEvent}>Uitloggen</button>;
+    let adminRoutes = <></>;
+
+    if(userHasRole(user, 'Admin')) {
+      adminRoutes = <>
+            <NavLink to={"/admin"} className='nav-link'>Gebruikers</NavLink>
+      </>;
+
+    }
+
+    navLinks = <>
+      {adminRoutes}
+      <button className='nav-link' onClick={logOutEvent}>Uitloggen</button>
+    </>;
   }
 
-
-
-  //@todo add Roles only routes
   return (<>  
     <Navbar expand="lg" className="bg-body-tertiary mb-4 justify-content-end" >
       <Container>
