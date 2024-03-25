@@ -41,7 +41,8 @@ export const SignalRProvider = (props: Props) => {
     //@todo env of vite 
     const establishConnection = () => {
         const con = new signalR.HubConnectionBuilder()
-        .withUrl("https://localhost:7161/hub")
+        .withUrl(`${import.meta.env.VITE_BACKEND_URL}/hub`)
+        .withAutomaticReconnect()
         .build();
     
         setConnection(con);

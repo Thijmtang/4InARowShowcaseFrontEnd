@@ -4,6 +4,8 @@ import { Button, Form } from 'react-bootstrap'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSignalR } from '../../lib/context/SignalRContext';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { standardErrorMessage } from '../../lib/services/ToastService';
 
 type Inputs = {
   lobbycode: string,
@@ -15,7 +17,7 @@ export const LobbyJoin = () => {
   // const {user} = useAuth();
   const [action, setAction] = useState('');
   const navigate = useNavigate();
-  const {connection, establishConnection} = useSignalR();
+  const {connection, establishConnection, isConnectionValid} = useSignalR();
 
   useEffect(() => {
     establishConnection();
@@ -40,6 +42,15 @@ export const LobbyJoin = () => {
   }
   
   const onSubmit: SubmitHandler<Inputs> = async (formData: Inputs) => {
+    if(!isConnectionValid()) {
+      try {
+        await establishConnection();
+        await connection?.start();
+      } catch (error) {
+          toast.error(standardErrorMessage);        
+      }
+    }
+    
     if(action === 'join') {
         joinLobby(formData.lobbycode);
         return;
@@ -47,11 +58,14 @@ export const LobbyJoin = () => {
     
     createLobby(formData.lobbycode);
   };
+  const onError = () => {
+    toast.error("Vul een lobbycode in");
+  }
 
   return (
     <FormCard>
       <h1>Join een lobby</h1>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit, onError)}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Lobbycode</Form.Label>
           <Form.Control type="text" autoComplete="off" placeholder="Voer een lobbycode in" {...register("lobbycode", {required: true})} />

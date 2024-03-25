@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { standardErrorMessage, updateToast } from '../../lib/services/ToastService';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button, Form } from 'react-bootstrap';
-import {enableTwoFactorAuthentication, getTwoFactorSecretKey} from '../../lib/services/AuthService';
+import {enableTwoFactorAuthentication, getTwoFactorSecretKey} from '../../lib/services/AuthApiService';
 import QRCode from 'react-qr-code';
 import '../../assets/TwoFactorAuthentication.scss'
 import { useAuth } from '../../lib/context/AuthContext';

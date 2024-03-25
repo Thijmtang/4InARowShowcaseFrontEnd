@@ -1,10 +1,13 @@
 import { fileURLToPath, URL } from 'node:url';
-
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import plugin from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'path';
 import child_process from 'child_process';
+
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const baseFolder =
     process.env.APPDATA !== undefined && process.env.APPDATA !== ''
@@ -46,10 +49,20 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
-                target: 'https://localhost:7018/',
-                secure: false
-            }
+            '/api': {
+                target: `${process.env.VITE_BACKEND_URL}/`,
+                secure: false,
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api/, ''),
+            },
+
+                '/hub': {
+                    target: `${process.env.VITE_BACKEND_URL}/hub`,
+                    secure: false,
+                    changeOrigin: true,
+                },
+               
+           
         },
         port: 5173,
         https: {

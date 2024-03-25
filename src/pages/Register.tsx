@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm, SubmitHandler } from "react-hook-form";
 import '../assets/Form.scss';
 import { toast } from 'react-toastify';
-import { register as registerAPI} from '../lib/services/AuthService';
+import { register as registerAPI} from '../lib/services/AuthApiService';
 import {updateToast} from '../lib/services/ToastService';
 import { FormCard } from '../components/FormCard';
 
