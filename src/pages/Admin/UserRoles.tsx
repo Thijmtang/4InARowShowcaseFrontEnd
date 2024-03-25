@@ -8,6 +8,7 @@ import {  SubmitHandler, useForm } from "react-hook-form";
 import { standardErrorMessage, updateErrorToast, updateToast } from "../../lib/services/ToastService";
 import { Button, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 
 type Inputs = {
@@ -19,7 +20,6 @@ type Inputs = {
 export const UserRoles = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
 
-  
   const [users, setUsers] = useState<User[]>();
   const [roles, setRoles] = useState<Roles[]>();
   const [disableSubmit, setDisableSubmit] = useState(false);
@@ -31,6 +31,7 @@ export const UserRoles = () => {
   }, []);
 
   const onSubmit: SubmitHandler<Inputs> = async (formData) => {
+    setDisableSubmit(true);
     const id = toast.loading("Een moment geduld...");
 
     try {
@@ -46,20 +47,15 @@ export const UserRoles = () => {
       }
       updateToast(id, "Gebruiker is succesvol aangepast", "success");
       } catch (error) {
-      
+
+        const err = error as AxiosError;
+        
+        const msg = err?.response?.data;
+        updateErrorToast(id,msg ); 
     }
-    
 
+    setDisableSubmit(false)
   };
-  // Get users
-  // get all possible roles
-
-
-  // const getUsers = async () => {
-  //   const response = await getUsers();
-  //   console.log(response?.data);
-  // }
-
 
   const populateRoles = async () => {
     const response = await getRoles();
