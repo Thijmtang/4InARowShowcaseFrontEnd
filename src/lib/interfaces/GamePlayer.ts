@@ -6,8 +6,6 @@ export interface GamePlayer {
     PlayerType: PlayerTypes,
 }
 
-
-
 export interface GamePlayers {
     [key: string]: GamePlayer;
 }

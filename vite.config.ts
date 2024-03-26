@@ -6,6 +6,7 @@ import path from 'path';
 import child_process from 'child_process';
 
 import dotenv from 'dotenv'
+import viteReact from '@vitejs/plugin-react';
 
 dotenv.config()
 
@@ -41,20 +42,21 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [plugin()],
+    plugins: [viteReact()],
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
         }
     },
     server: {
+        
         proxy: {
-            '/api': {
-                target: `${process.env.VITE_BACKEND_URL}/`,
-                secure: false,
-                changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, ''),
-            },
+            // '/api': {
+            //     target: `${process.env.VITE_BACKEND_URL}/`,
+            //     secure: false,
+            //     changeOrigin: true,
+            //     rewrite: (path) => path.replace(/^\/api/, ''),
+            // },
 
                 '/hub': {
                     target: `${process.env.VITE_BACKEND_URL}/hub`,
@@ -64,7 +66,8 @@ export default defineConfig({
                
            
         },
-        port: 5173,
+        port: 3000,
+        host: '127.0.0.1',
         https: {
             key: fs.readFileSync(keyFilePath),
             cert: fs.readFileSync(certFilePath),

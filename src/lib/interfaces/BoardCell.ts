@@ -1,6 +1,6 @@
 import { PlayerTypes } from "../enums/PlayerTypes";
 
-export type BoardCell = {
+export interface BoardCell {
     Value: PlayerTypes,
     X: number,
     Y: number,

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "/api/Roles";
+const baseURL = `${import.meta.env.VITE_BACKEND_URL}/Roles`;
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

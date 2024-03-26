@@ -91,7 +91,13 @@ export const Lobby = () => {
       return;
     }
 
-    connection?.send("StartGame", gameLobby.Code);
+    try {
+      connection?.send("StartGame", gameLobby.Code);
+      
+    } catch (error) {
+      navigate('/');
+    }
+
   }
 
   const CopyCodeClipBoard = () => {
