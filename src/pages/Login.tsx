@@ -20,6 +20,7 @@ export const Login = () => {
   const [disableSubmit, setDisableSubmit] = useState(false);
   const navigate = useNavigate();
 
+
   // if(user) {
   //   return <Navigate replace to="/" />;
   // }
@@ -37,7 +38,6 @@ export const Login = () => {
     } catch(error) {
       const err = error as AxiosError
 
-      console.log(err);
       const details = err?.response?.data?.detail;
 
       // Logged in, but requires 2FA
@@ -67,7 +67,7 @@ export const Login = () => {
   return (
     <FormCard>
   
-      <h1>Login</h1>
+      <h1 data-cy="input-title">Login</h1>
       <Form onSubmit={handleSubmit(onSubmit, onError)}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>

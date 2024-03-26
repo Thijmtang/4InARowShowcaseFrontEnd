@@ -29,6 +29,8 @@ describe('register page', () => {
     cy.url().should('match', /\/login/);
   })
 
+
+
   it('Redirect to login link', () => {
     cy.visit(' https://localhost:3000/register');
 
@@ -36,7 +38,28 @@ describe('register page', () => {
     cy.url().should('match', /\/login/);
   });
 
-  it('Should login using the registered email and password', function() {
+
+  it('Cant register same email', function() {
+    const email = this.registeredEmail;
+    const password = this.registeredPassword;
+
+    cy.visit(' https://localhost:3000/register');
+
+    cy.get('input[data-cy="input-email"]').type(email);
+    cy.get('input[data-cy="input-password"]').type(password);
+
+    cy.get('button[data-cy="submit"]').click();
+
+
+    cy.wait(1500);
+    // Wait for the toast notification to appear
+    cy.get('.Toastify__toast--error').should('be.visible');
+    cy.get('.Toastify__toast--error').should('contain', 'Je account kon niet aangemaakt worden, probeer het later opnieuw'); 
+  })
+  
+
+
+  it('Should login using the registered email and password and redirect to 2FA activation', function() {
     // Retrieve the registered email and password from aliases
     const email = this.registeredEmail;
     const password = this.registeredPassword;
@@ -50,5 +73,8 @@ describe('register page', () => {
 
     cy.get('h1[data-cy="page-title"]').should('contain', '2FA inschakelen');
   });
+
+
+  
 });
 

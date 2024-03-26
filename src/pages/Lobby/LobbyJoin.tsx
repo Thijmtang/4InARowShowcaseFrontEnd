@@ -51,7 +51,9 @@ export const LobbyJoin = () => {
       }
     }
     
+    
     if(action === 'join') {
+        
         joinLobby(formData.lobbycode);
         return;
     }

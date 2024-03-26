@@ -14,7 +14,6 @@ describe('login page', () => {
   });
 
 
-
   it('Redirect to register link', () => {
     cy.visit(' https://localhost:3000/login');
 
@@ -22,8 +21,25 @@ describe('login page', () => {
     cy.url().should('match', /\/register/);
   });
 
+  
+  it('No access to lobby if not logged in', () => {
+    cy.visit(' https://localhost:3000/lobby');
+
+    cy.get('[data-cy="input-title"]').should('contain', 'Login');
+  });
 
 
+  it('No access to gameroom if not logged in', () => {
+    cy.visit(' https://localhost:3000/game');
 
-    
+    cy.get('[data-cy="input-title"]').should('contain', 'Login');
+  });
+
+
+  it('No access to admin page if not logged in', () => {
+    cy.visit(' https://localhost:3000/admin');
+
+    cy.get('[data-cy="input-title"]').should('contain', 'Login');
+  });
+
 });

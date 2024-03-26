@@ -51,12 +51,12 @@ export default defineConfig({
     server: {
         
         proxy: {
-            '/api': {
-                target: `${process.env.VITE_BACKEND_URL}/`,
-                secure: false,
-                changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, ''),
-            },
+            // '/api': {
+            //     target: `${process.env.VITE_BACKEND_URL}/`,
+            //     secure: false,
+            //     changeOrigin: true,
+            //     rewrite: (path) => path.replace(/^\/api/, ''),
+            // },
 
                 '/hub': {
                     target: `${process.env.VITE_BACKEND_URL}/hub`,

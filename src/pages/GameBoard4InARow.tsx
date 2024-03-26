@@ -1,7 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import '../assets/GameBoard4InARow.scss';
-
-
 import { useEffect, useState } from 'react'
 import GameBoardCell from '../components/4InARow/GameBoardCell';
 import PlayerBadge from '../components/4InARow/PlayerBadge';
@@ -12,6 +10,7 @@ import { useSignalR } from '../lib/context/SignalRContext';
 import { GamePlayer } from '../lib/interfaces/GamePlayer';
 import { Button, Modal } from 'react-bootstrap';
 import { PlayerTypes } from '../lib/enums/PlayerTypes';
+import { useAuth } from '../lib/context/AuthContext';
 
 function GameBoard4InARow() {
   const navigate = useNavigate();
@@ -68,12 +67,23 @@ function GameBoard4InARow() {
     if(connection?.connectionId != gameLobby.CurrentPlayerTurn) {
       return;
     }
+    try {
+      connection?.send("ClickCell", gameLobby.Code, x);
+      
+    } catch (error) {
+      connection?.stop();
 
-    connection?.send("ClickCell", gameLobby.Code, x);
+      navigate('/');
+    }
   }
   
   const startGame = () => {
-    connection?.send("StartGame", gameLobby.Code);
+    try {
+      connection?.send("StartGame", gameLobby.Code);
+    } catch (error) {
+      connection?.stop();
+      navigate('/');
+    }
   }
 
   return (
