@@ -45,7 +45,7 @@ export const Register = () => {
       <Form onSubmit={handleSubmit(onSubmit, onError)}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" {...register("email", {required:true })}/>
+          <Form.Control data-cy="input-email" type="email" placeholder="Enter email" {...register("email", {required:true })}/>
           {errors?.email && (
             <Form.Text className="text-danger">
               {errors?.email?.message}
@@ -57,6 +57,7 @@ export const Register = () => {
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control
+            data-cy="input-password"
              isValid={ errors?.password === null} type="password" placeholder="Password"
             {...register("password", {
               required: true,
@@ -68,7 +69,7 @@ export const Register = () => {
             />
 
           {errors?.password && (
-            <Form.Text className="text-danger">
+            <Form.Text className="text-danger" data-cy="error-password">
               {errors?.password?.message}
             </Form.Text>
           )}
@@ -77,11 +78,11 @@ export const Register = () => {
       
         <Form.Group className='footer'> 
 
-          <Button variant={"success" + (disableSubmit ? ' ' + 'disabled' : '')} type="submit">
+          <Button variant={"success" + (disableSubmit ? ' ' + 'disabled' : '')} type="submit" data-cy="submit">
             Account aanmaken
           </Button>
 
-          <Link to="/login">Heb je al een account?</Link>
+          <Link to="/login" data-cy="link-login">Heb je al een account?</Link>
 
         </Form.Group>
 

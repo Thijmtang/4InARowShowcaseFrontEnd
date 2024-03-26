@@ -38,12 +38,16 @@ export const AuthProvider = ( props: Props) => {
 
     // User succesfully logged in 
     if(response.status === 200) {
-      const userData = await getUserInfo();
-      await setUser(userData.data);
+      try {
+        const userData = await getUserInfo();
+        await setUser(userData.data);
+  
+        setLoggedIn(true);
+      } catch (error) {
+        setUser(null);
 
-      // sessionStorage.setItem("authTokens", JSON.stringify(data));
+      }
 
-      setLoggedIn(true);
       return;
     }
 

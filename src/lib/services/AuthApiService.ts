@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // @todo env variable
-const baseURL = "/api";
+const baseURL = `${import.meta.env.VITE_BACKEND_URL}`;
 
 const AxiosInstance = axios.create({
         baseURL: baseURL,

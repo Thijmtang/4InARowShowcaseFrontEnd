@@ -9,6 +9,9 @@ import { standardErrorMessage, updateErrorToast, updateToast } from "../../lib/s
 import { Button, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { useAuth } from "../../lib/context/AuthContext";
+import { useNavItem } from "@restart/ui/NavItem";
+import { useNavigate } from "react-router";
 
 
 type Inputs = {
@@ -18,15 +21,22 @@ type Inputs = {
 
 
 export const UserRoles = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+  const { register, handleSubmit } = useForm<Inputs>();
+  const navigate = useNavigate();
+  
 
   const [users, setUsers] = useState<User[]>();
   const [roles, setRoles] = useState<Roles[]>();
   const [disableSubmit, setDisableSubmit] = useState(false);
 
   useEffect(() => {
-    populateUsers();
-    populateRoles();
+    try {
+      populateUsers();
+      populateRoles();
+    } catch (error) {
+      navigate('/');
+    }
+ 
 
   }, []);
 
@@ -39,19 +49,17 @@ export const UserRoles = () => {
 
       const data = await response?.data;
 
-      console.log(response);
-      console.log(data);
       if(response.status != 200) {
         updateErrorToast(id,standardErrorMessage );
         return;
       }
       updateToast(id, "Gebruiker is succesvol aangepast", "success");
-      } catch (error) {
+    } catch (error) {
 
         const err = error as AxiosError;
         
         const msg = err?.response?.data;
-        updateErrorToast(id,msg ); 
+        updateErrorToast(id, msg); 
     }
 
     setDisableSubmit(false)
