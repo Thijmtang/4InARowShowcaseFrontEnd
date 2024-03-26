@@ -1,6 +1,6 @@
 describe('register page', () => {
   it('Should show validation when complexity of password is not met', () => {
-    cy.visit(' https://localhost:5173/register');
+    cy.visit(' https://localhost:3000/register');
 
     cy.get('input[data-cy="input-email"]').type("test@gmail.com");
     cy.get('input[data-cy="input-password"]').type("iamnotcomplex");
@@ -10,13 +10,13 @@ describe('register page', () => {
     cy.get('[data-cy="error-password"').should('exist');
   })
   
-  it('Should redirect user on succesful register to 2fa activation screen', () => {
+  it('Redirect user on succesful login to 2fa activation screen after fresh register', () => {
 
     const email = `${Date.now()}@aharotest.com`;
     const password = "Greenbacca2003!";
 
 
-    cy.visit(' https://localhost:5173/register');
+    cy.visit(' https://localhost:3000/register');
 
     cy.get('input[data-cy="input-email"]').type(email);
     cy.get('input[data-cy="input-password"]').type(password);
@@ -30,7 +30,7 @@ describe('register page', () => {
   })
 
   it('Redirect to login link', () => {
-    cy.visit(' https://localhost:5173/register');
+    cy.visit(' https://localhost:3000/register');
 
     cy.get('[data-cy="link-login"]').click();
     cy.url().should('match', /\/login/);
@@ -41,7 +41,7 @@ describe('register page', () => {
     const email = this.registeredEmail;
     const password = this.registeredPassword;
 
-    cy.visit('https://localhost:5173/login');
+    cy.visit('https://localhost:3000/login');
 
     cy.get('input[data-cy="input-email"]').type(email);
     cy.get('input[data-cy="input-password"]').type(password);

@@ -1,6 +1,6 @@
 describe('login page', () => {
   it('Invalid password', () => {
-    cy.visit(' https://localhost:5173/login');
+    cy.visit(' https://localhost:3000/login');
 
     cy.get('input[data-cy="input-email"]').type("test@gmail.com");
     cy.get('input[data-cy="input-password"]').type("Idontexist"); 
@@ -16,7 +16,7 @@ describe('login page', () => {
 
 
   it('Redirect to register link', () => {
-    cy.visit(' https://localhost:5173/login');
+    cy.visit(' https://localhost:3000/login');
 
     cy.get('[data-cy="link-register"]').click();
     cy.url().should('match', /\/register/);
