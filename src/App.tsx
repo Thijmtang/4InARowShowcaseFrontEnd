@@ -14,7 +14,13 @@ function App() {
         // On SignalR websocket connection, global events
         connection?.on("FlashAlert", (message:string, type:string) => {
             try {
-              toast[type](message);
+                if (type === 'success') {
+                    toast.success(message);
+                } else if (type === 'error') {
+                    toast.error(message);
+                } else if (type === 'warning') {
+                    toast.warning(message);
+                }
             } catch (error) {
               toast.error(standardErrorMessage);
         }});

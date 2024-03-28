@@ -9,8 +9,6 @@ import { standardErrorMessage, updateErrorToast, updateToast } from "../../lib/s
 import { Button, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
-import { useAuth } from "../../lib/context/AuthContext";
-import { useNavItem } from "@restart/ui/NavItem";
 import { useNavigate } from "react-router";
 
 
@@ -47,7 +45,6 @@ export const UserRoles = () => {
     try {
       const response = await putRolesEdit(formData.user, formData.role);
 
-      const data = await response?.data;
 
       if(response.status != 200) {
         updateErrorToast(id,standardErrorMessage );
