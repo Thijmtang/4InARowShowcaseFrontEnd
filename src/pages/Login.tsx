@@ -38,8 +38,8 @@ export const Login = () => {
     } catch(error) {
       const err = error as AxiosError
 
-      const details = err?.response?.data?.detail;
-
+      const details = (err?.response?.data as { detail?: string })?.detail;
+      
       // Logged in, but requires 2FA
       if(details === 'RequiresTwoFactor') {
         navigate('/2fa/verify', {state: {

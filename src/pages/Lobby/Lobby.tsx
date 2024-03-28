@@ -85,7 +85,7 @@ export const Lobby = () => {
   },[players])
 
   const startGame = () => {
-    const currentPlayer = players[connection?.connectionId];
+    const currentPlayer = players[connection?.connectionId ?? ""];
     if(currentPlayer.PlayerType != PlayerTypes.Player1) {
       toast.error("Jij bent niet de lobby leader!")
       return;

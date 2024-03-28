@@ -55,7 +55,7 @@ export const UserRoles = () => {
 
         const err = error as AxiosError;
         
-        const msg = err?.response?.data;
+        const msg = (err?.response?.data ?? "").toString();
         updateErrorToast(id, msg); 
     }
 

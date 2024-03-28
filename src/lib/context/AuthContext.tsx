@@ -59,10 +59,7 @@ export const AuthProvider = ( props: Props) => {
   };
 
   const logout = async () => {
-    // Perform logout logic here (e.g., clear local storage, make API call)
-
     await signOutAPI();
-      
 
     setUser(null);
     setLoggedIn(false);

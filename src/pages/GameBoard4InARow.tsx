@@ -10,7 +10,6 @@ import { useSignalR } from '../lib/context/SignalRContext';
 import { GamePlayer } from '../lib/interfaces/GamePlayer';
 import { Button, Modal } from 'react-bootstrap';
 import { PlayerTypes } from '../lib/enums/PlayerTypes';
-import { useAuth } from '../lib/context/AuthContext';
 
 function GameBoard4InARow() {
   const navigate = useNavigate();
@@ -64,7 +63,7 @@ function GameBoard4InARow() {
 
   const placeCell = (x: number) => {
     // It is not the users turn.
-    if(connection?.connectionId != gameLobby.CurrentPlayerTurn) {
+    if((connection?.connectionId ?? "") != gameLobby.CurrentPlayerTurn) {
       return;
     }
     try {
@@ -110,7 +109,7 @@ function GameBoard4InARow() {
           </Modal.Body>        
           <Modal.Footer>
             <Button variant="secondary" onClick={() => navigate('/')}>Terug naar lobbies</Button>
-            <Button variant="primary" disabled={gameLobby.Players[connection?.connectionId].PlayerType === PlayerTypes.Player2} onClick={() => startGame()}>Nog emmm keertje spielen</Button>
+            <Button variant="primary" disabled={gameLobby.Players[connection?.connectionId ?? ""].PlayerType === PlayerTypes.Player2} onClick={() => startGame()}>Nog emmm keertje spielen</Button>
           </Modal.Footer>
       </Modal>
 
