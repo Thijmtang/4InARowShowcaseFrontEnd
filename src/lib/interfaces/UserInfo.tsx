@@ -1,6 +1,5 @@
 export type UserInfo = {
-    username: string;
-    twoFactorEnabled: boolean;
-    roles: string[];
-    
-}
+  unique_name: string;
+  two_fa_enabled: boolean;
+  role: string[];
+};

@@ -11,49 +11,47 @@ import { UserRoles } from "../../pages/Admin/UserRoles";
 import { useAuth } from "../context/AuthContext";
 
 export const getRoutes = (user: UserInfo | null) => {
-
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { userHasRole} = useAuth();
+  const { userHasRole } = useAuth();
 
   let routeContent = <></>;
 
   // User is logged in
-  if(user) {
-      // Logged in users are forced to enable 2fa
-      if(!user.twoFactorEnabled) {
-        routeContent = <>
-                <Route path="" element={<EnableTwoFactor/>} />
-        </>;
+  if (user) {
+    console.log(user.two_fa_enabled);
+    console.log(user.two_fa_enabled === false);
+    // Logged in users are forced to enable 2fa
+    if (!user.two_fa_enabled) {
+      routeContent = <Route path="" element={<EnableTwoFactor />} />;
 
-        return routeContent;
-      }
-
-      let adminRoutes = <></>;
-      if(userHasRole(user, 'Admin')) {
-        adminRoutes = <>
-          <Route path="/admin" element={<UserRoles/>} />
-        </>
-      }    
-
-      // Login 2FA routes only
-      routeContent = <>
-              <Route path="" element={<LobbyJoin/>} />
-              <Route path="/lobby" element={<Lobby/>} />
-              <Route path="/game" element={<GameBoard4InARow/>} />
-              {adminRoutes}
-      </>;
-      
       return routeContent;
+    }
+
+    let adminRoutes = <></>;
+    if (userHasRole(user, "Admin")) {
+      adminRoutes = <Route path="/admin" element={<UserRoles />} />;
+    }
+
+    // Login 2FA routes only
+    routeContent = (
+      <>
+        <Route path="" element={<LobbyJoin />} />
+        <Route path="/lobby" element={<Lobby />} />
+        <Route path="/game" element={<GameBoard4InARow />} />
+        {adminRoutes}
+      </>
+    );
+
+    return routeContent;
   }
 
-  
-  routeContent= 
+  routeContent = (
     <>
-      <Route path="/Login" element={<Login/>} />
-      <Route path="/2fa/verify" element={<TwoFactorLogin/>} />
-      <Route path="/Register" element={<Register/>} />
-    
-    </>;
+      <Route path="/Login" element={<Login />} />
+      <Route path="/2fa/verify" element={<TwoFactorLogin />} />
+      <Route path="/Register" element={<Register />} />
+    </>
+  );
 
   return routeContent;
-}
+};

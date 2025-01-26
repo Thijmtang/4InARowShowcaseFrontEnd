@@ -1,37 +1,37 @@
-import  { useEffect, useState } from 'react'
-import { BoardCell } from '../../lib/interfaces/BoardCell';
+import { useEffect, useState } from "react";
+import { BoardCell } from "../../lib/interfaces/BoardCell";
 
 interface Props {
-    animation: boolean,
-    cell: BoardCell,
-    updateField: CallableFunction,
-    clickEvent: (x: number) => void
+  animation: boolean;
+  cell: BoardCell;
+  clickable: boolean;
+  clickEvent: (x: number) => void;
 }
 
-function GameBoardCell(props:Props) {
-    const positionX = props.cell.X;
-    const player = props.cell.Value;
+function GameBoardCell(props: Readonly<Props>) {
+  const positionX = props.cell.X;
+  const player = props.cell.Value;
 
-    const [cssClass, setCssClass] = useState("");
+  const [cssClass, setCssClass] = useState("");
 
-    
-    useEffect(() => {
-        let animation = '';
-        if(props.animation) {
-            animation = 'new';
-        }
+  useEffect(() => {
+    let animation = "";
+    if (props.animation) {
+      animation = "new";
+    }
+    let clickable = "";
+    if (!props.clickable) {
+      clickable = "not-clickable";
+    }
 
-        setCssClass(`player-${player} ${animation}`);
-    }, [props.animation, player]);
+    setCssClass(`player-${player} ${animation} ${clickable}`);
+  }, [props.animation, player, props.clickable]);
 
-    const clickEvent = async () => {
-        props.clickEvent(positionX)
-    };  
+  const clickEvent = async () => {
+    props.clickEvent(positionX);
+  };
 
-    return (
-    <div className={`cell ${cssClass}`} onClick={clickEvent}> </div>
-  )
+  return <button className={`cell ${cssClass}`} onClick={clickEvent} />;
 }
 
-export default GameBoardCell
-
+export default GameBoardCell;

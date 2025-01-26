@@ -1,27 +1,28 @@
 import { useEffect, useState } from "react";
-import { FormCard } from "../../components/FormCard"
+import { FormCard } from "../../components/FormCard";
 import { getRoles, putRolesEdit } from "../../lib/services/RolesApiService";
 import { getUsers } from "../../lib/services/UserApiService";
 import { Roles } from "../../lib/interfaces/Roles";
 import { User } from "../../lib/interfaces/User";
-import {  SubmitHandler, useForm } from "react-hook-form";
-import { standardErrorMessage, updateErrorToast, updateToast } from "../../lib/services/ToastService";
+import { SubmitHandler, useForm } from "react-hook-form";
+import {
+  standardErrorMessage,
+  updateErrorToast,
+  updateToast,
+} from "../../lib/services/ToastService";
 import { Button, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router";
 
-
 type Inputs = {
-  user: string,
-  role: string,
+  user: string;
+  role: string;
 };
-
 
 export const UserRoles = () => {
   const { register, handleSubmit } = useForm<Inputs>();
   const navigate = useNavigate();
-  
 
   const [users, setUsers] = useState<User[]>();
   const [roles, setRoles] = useState<Roles[]>();
@@ -32,10 +33,8 @@ export const UserRoles = () => {
       populateUsers();
       populateRoles();
     } catch (error) {
-      navigate('/');
+      navigate("/");
     }
- 
-
   }, []);
 
   const onSubmit: SubmitHandler<Inputs> = async (formData) => {
@@ -45,74 +44,84 @@ export const UserRoles = () => {
     try {
       const response = await putRolesEdit(formData.user, formData.role);
 
-
-      if(response.status != 200) {
-        updateErrorToast(id,standardErrorMessage );
+      if (response.status != 200) {
+        updateErrorToast(id, standardErrorMessage);
         return;
       }
       updateToast(id, "Gebruiker is succesvol aangepast", "success");
     } catch (error) {
+      const err = error as AxiosError;
 
-        const err = error as AxiosError;
-        
-        const msg = (err?.response?.data ?? "").toString();
-        updateErrorToast(id, msg); 
+      const msg = (err?.response?.data ?? "").toString();
+      updateErrorToast(id, msg);
     }
 
-    setDisableSubmit(false)
+    setDisableSubmit(false);
   };
 
   const populateRoles = async () => {
     const response = await getRoles();
     const data = await response.data;
     setRoles(data);
-  }
-
+  };
 
   const populateUsers = async () => {
     const response = await getUsers();
     const data = await response.data;
 
     setUsers(data);
-  }
+  };
 
   return (
     <>
       <FormCard>
-      <h1>Beheren gebruikers</h1>
+        <h1>Beheren gebruikers</h1>
 
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Gebruiker</Form.Label>
-            <Form.Select aria-label="Default select example" {...register("user", {required: true})} >
-              <option hidden={true} >Selecteer een gebruiker</option>
-              {users?.map((user, index)=> {
-                return <option value={user.id} key={index}>{user.email}</option>
+            <Form.Select
+              aria-label="Default select example"
+              {...register("user", { required: true })}
+            >
+              <option hidden={true}>Selecteer een gebruiker</option>
+              {users?.map((user, index) => {
+                return (
+                  <option value={user.id} key={index}>
+                    {user.email}
+                  </option>
+                );
               })}
- 
             </Form.Select>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Rol</Form.Label>
-            <Form.Select aria-label="Default select example" {...register("role", {required: true})} >
-              <option hidden={true} >Selecteer een gebruiker</option>
-              {roles?.map((role, index)=> {
-                return <option value={role.name} key={index}>{role.name}</option>
+            <Form.Select
+              aria-label="Default select example"
+              {...register("role", { required: true })}
+            >
+              <option hidden={true}>Selecteer een gebruiker</option>
+              {roles?.map((role, index) => {
+                return (
+                  <option value={role.name} key={index}>
+                    {role.name}
+                  </option>
+                );
               })}
             </Form.Select>
-
           </Form.Group>
 
-          <Form.Group className='footer'>
-          <Button variant={"success" + (disableSubmit ? ' ' + 'disabled' : '')} type="submit">
-              Login
-          </Button>
-
+          <Form.Group className="footer">
+            <Button
+              variant={"success" + (disableSubmit ? " " + "disabled" : "")}
+              type="submit"
+            >
+              Pas aan
+            </Button>
           </Form.Group>
         </Form>
       </FormCard>
     </>
-   
-  )
-}
+  );
+};

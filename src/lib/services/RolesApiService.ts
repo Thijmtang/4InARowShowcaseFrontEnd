@@ -1,25 +1,15 @@
-import axios from "axios";
-
-const baseURL = `${import.meta.env.VITE_BACKEND_URL}/Roles`;
-
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const AxiosInstance = axios.create({
-        baseURL: baseURL,
-        withCredentials: true,
-});
-
+import axiosConfig from "../helpers/AxiosInstance";
 
 export const getRoles = async () => {
-    const response = await AxiosInstance.get(`All`);
-    return response;
-}
+  const response = await axiosConfig().get(`Roles/All`);
+  return response;
+};
 
 export const putRolesEdit = async (userId: string, role: string) => {
-    const response = await AxiosInstance.put(`Edit`, {
-        userId: userId,
-        role: role 
-    });
+  const response = await axiosConfig().put(`Roles/Edit`, {
+    userId: userId,
+    role: role,
+  });
 
-    return response;
-}
+  return response;
+};

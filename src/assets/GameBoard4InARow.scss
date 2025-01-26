@@ -1,71 +1,85 @@
 .board-container {
-    transition: .2s ease-in-out;
-    overflow: hidden;
-    background-color: #F6F6F6;
-    border-radius: 5px;
-    justify-content: center;
-    padding: 10px;
-    .header {
-        padding-bottom: 50px;
-    }
-    .board {
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: repeat(8, 1fr);
-        grid-template-rows: repeat(8, 1fr);
-        justify-content: space-evenly;
-        gap: 1px;
-        max-height: 754px;
+  transition: 0.2s ease-in-out;
+  overflow: hidden;
+  background-color: #f6f6f6;
+  border-radius: 5px;
+  justify-content: center;
+  padding: 10px;
+  .header {
+    padding-bottom: 50px;
+  }
+  .board {
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    justify-content: space-evenly;
+    gap: 1px;
+    max-height: 754px;
+    aspect-ratio: 1/1;
+
+    .cell {
+      border: none;
+      aspect-ratio: 1/1;
+      padding: 20px;
+      background-color: lightgray;
+      height: 100%;
+      border-radius: 100%;
+      position: relative;
+      cursor: pointer;
+
+      &::after {
+        top: 0;
+        left: 0;
+
+        position: absolute;
+        content: "";
+        border-radius: 100%;
+        width: 100%;
+        height: 100%;
         aspect-ratio: 1/1;
-    
-        .cell {
-            aspect-ratio: 1/1;
-            padding: 20px;
-            background-color: lightgray;
-            height: 100%;
-            border-radius: 100%;
-            position: relative;
+        display: block;
+        background-color: transparent;
+      }
 
-            &::after{
-                cursor: pointer;
-
-                top: 0;
-                left: 0;
-
-                position: absolute;
-                content: '';
-                border-radius: 100%;
-                width: 100%;
-                height: 100%;
-                aspect-ratio: 1/1;
-                display: block;
-                background-color: transparent;
-
-            }
-
-            &.player-1{
-                &::after {
-                    background-color: #FFC107;
-                }
-            }
-
-            &.player-2{
-                &::after {
-                    background-color: #DC3545;
-                }
-            }
-            &.new {
-                &::after{
-                    animation: .4s drop ease-in-out;
-                }
-            }
+      &.player-1 {
+        &::after {
+          background-color: #ffc107;
         }
+      }
+
+      &.player-2 {
+        &::after {
+          background-color: #dc3545;
+        }
+      }
+      &.new {
+        &::after {
+          animation: 0.4s drop ease-in-out;
+        }
+      }
+      &.not-clickable {
+        cursor: not-allowed;
+      }
     }
+  }
 }
 
 @keyframes drop {
-    0% {top: -800%; scale: 0.4;}
-    50% {top: 0%;  scale: 1.1}
-    75% {top: -30%; scale:  0.9;}
-    100% {top: 0; scale: 1;}
+  0% {
+    top: -800%;
+    scale: 0.4;
   }
+  50% {
+    top: 0%;
+    scale: 1.1;
+  }
+  75% {
+    top: -30%;
+    scale: 0.9;
+  }
+  100% {
+    top: 0;
+    scale: 1;
+  }
+}

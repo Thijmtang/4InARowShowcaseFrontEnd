@@ -1,55 +1,63 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import '../assets/GameBoard4InARow.scss';
-import { useEffect, useState } from 'react'
-import GameBoardCell from '../components/4InARow/GameBoardCell';
-import PlayerBadge from '../components/4InARow/PlayerBadge';
-import { BoardCell } from '../lib/interfaces/BoardCell';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { GameLobby } from '../lib/interfaces/GameLobby';
-import { useSignalR } from '../lib/context/SignalRContext';
-import { GamePlayer } from '../lib/interfaces/GamePlayer';
-import { Button, Modal } from 'react-bootstrap';
-import { PlayerTypes } from '../lib/enums/PlayerTypes';
+import "../assets/GameBoard4InARow.scss";
+import { useEffect, useState } from "react";
+import GameBoardCell from "../components/4InARow/GameBoardCell";
+import PlayerBadge from "../components/4InARow/PlayerBadge";
+import { BoardCell } from "../lib/interfaces/BoardCell";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { GameLobby } from "../lib/interfaces/GameLobby";
+import { useSignalR } from "../lib/context/SignalRContext";
+import { GamePlayer } from "../lib/interfaces/GamePlayer";
+import { Button, Modal } from "react-bootstrap";
+import { PlayerTypes } from "../lib/enums/PlayerTypes";
+import { useAuth } from "../lib/context/AuthContext";
 
 function GameBoard4InARow() {
   const navigate = useNavigate();
   const location = useLocation();
-  const locationState = (location.state as {gameLobby : GameLobby});
-  const {connection, isConnectionValid} = useSignalR();
+  const locationState = location.state as { gameLobby: GameLobby };
+  const { connection, isConnectionValid } = useSignalR();
+  const { refreshUser } = useAuth();
 
-  if(locationState === null || !isConnectionValid()) {
+  if (locationState === null || !isConnectionValid()) {
     return <Navigate to="/" replace={true} />;
   }
-  
-  const [gameLobby, setGameLobby] = useState<GameLobby>(locationState?.gameLobby);
+
+  const [gameLobby, setGameLobby] = useState<GameLobby>(
+    locationState?.gameLobby
+  );
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
 
-  const [currentPlayer, setCurrentPlayer] = useState<GamePlayer>(gameLobby?.Players[gameLobby?.CurrentPlayerTurn]);
-  const [winner, setWinner] = useState<GamePlayer>(gameLobby?.Players[gameLobby?.Winner]);
+  const [currentPlayer, setCurrentPlayer] = useState<GamePlayer>(
+    gameLobby?.Players[gameLobby?.CurrentPlayerTurn]
+  );
+  const [winner, setWinner] = useState<GamePlayer>(
+    gameLobby?.Players[gameLobby?.Winner]
+  );
 
   const [field, setField] = useState<BoardCell[]>(gameLobby?.GameField);
 
   // ClickCell
   useEffect(() => {
-    connection?.on('RenderField', (lobby: string) => {
+    connection?.on("RenderField", (lobby: string) => {
       setGameLobby(JSON.parse(lobby));
     });
 
-    connection?.on('ShowChoiceModal', () => {
+    connection?.on("ShowChoiceModal", () => {
       // setGameLobby(JSON.parse(lobby));
       handleShow();
     });
 
-    connection?.on('Endlobby', () => {
-      navigate('/');
+    connection?.on("Endlobby", () => {
+      navigate("/");
     });
 
-
-    connection?.on('StartGame', () => {
+    connection?.on("StartGame", () => {
       handleClose();
+      refreshUser();
     });
     // Update lobby when someone leaves,
   }, [connection]);
@@ -58,63 +66,91 @@ function GameBoard4InARow() {
     setCurrentPlayer(gameLobby.Players[gameLobby.CurrentPlayerTurn]);
     setWinner(gameLobby.Players[gameLobby?.Winner]);
 
-      setField(gameLobby.GameField);
+    setField(gameLobby.GameField);
   }, [gameLobby]);
 
   const placeCell = (x: number) => {
     // It is not the users turn.
-    if((connection?.connectionId ?? "") != gameLobby.CurrentPlayerTurn) {
+    if ((connection?.connectionId ?? "") != gameLobby.CurrentPlayerTurn) {
       return;
     }
     try {
       connection?.send("ClickCell", gameLobby.Code, x);
-      
     } catch (error) {
       connection?.stop();
 
-      navigate('/');
+      navigate("/");
     }
-  }
-  
+  };
+
   const startGame = () => {
     try {
       connection?.send("StartGame", gameLobby.Code);
     } catch (error) {
       connection?.stop();
-      navigate('/');
+      navigate("/");
     }
-  }
+  };
 
   return (
     <div className="board-container">
       <div className="header">
         <div>
-        <h1>
-          <b>Huidige beurt</b> <PlayerBadge playerType={currentPlayer?.PlayerType}>{currentPlayer?.Username} ({currentPlayer.ConnectionId == connection?.connectionId ? 'Jij': 'Tegenstander'})</PlayerBadge> 
-        </h1>
+          <h1>
+            <b>Huidige beurt</b>{" "}
+            <PlayerBadge playerType={currentPlayer?.PlayerType}>
+              {currentPlayer?.Username} (
+              {currentPlayer.ConnectionId == connection?.connectionId
+                ? "Jij"
+                : "Tegenstander"}
+              )
+            </PlayerBadge>
+          </h1>
         </div>
       </div>
-      <div className='board'>
+      <div className="board">
         {field.map((column, i) => {
-          return <GameBoardCell key={i}  animation={column?.New} cell={column} updateField={setField} clickEvent={placeCell} />
+          return (
+            <GameBoardCell
+              clickable={currentPlayer.ConnectionId == connection?.connectionId}
+              key={i}
+              animation={column?.New}
+              cell={column}
+              clickEvent={placeCell}
+            />
+          );
         })}
       </div>
 
-      <Modal show={showModal} >
+      <Modal show={showModal}>
         <Modal.Header>
-        <Modal.Title>Het spel is afgelopen</Modal.Title>
+          <Modal.Title>Het spel is afgelopen</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <p>{winner?.ConnectionId != connection?.connectionId ? 'Je hebt verloren 😓': 'Je hebt gewonnen 😀'}</p>
-          </Modal.Body>        
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => navigate('/')}>Terug naar lobbies</Button>
-            <Button variant="primary" disabled={gameLobby.Players[connection?.connectionId ?? ""].PlayerType === PlayerTypes.Player2} onClick={() => startGame()}>Nog emmm keertje spielen</Button>
-          </Modal.Footer>
+          <p>
+            {winner?.ConnectionId != connection?.connectionId
+              ? "Je hebt verloren 😓"
+              : "Je hebt gewonnen 😀"}
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => navigate("/")}>
+            Terug naar lobbies
+          </Button>
+          <Button
+            variant="primary"
+            disabled={
+              gameLobby.Players[connection?.connectionId ?? ""].PlayerType ===
+              PlayerTypes.Player2
+            }
+            onClick={() => startGame()}
+          >
+            Nog emmm keertje spielen
+          </Button>
+        </Modal.Footer>
       </Modal>
-
-    </div>);
+    </div>
+  );
 }
-
 
 export default GameBoard4InARow;
