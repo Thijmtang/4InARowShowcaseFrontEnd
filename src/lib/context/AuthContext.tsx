@@ -5,7 +5,6 @@ import { UserInfo } from "../interfaces/UserInfo";
 import ArgumentError from "../errors/ArgumentError";
 import { clearToken, getToken, setToken } from "../helpers/TokenHelper";
 import { jwtDecode } from "jwt-decode";
-import { useSignalR } from "./SignalRContext";
 
 // const navigate = useNavigate();
 // @todo add roles??
