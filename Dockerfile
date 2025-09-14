@@ -21,4 +21,4 @@ RUN npm run build
 EXPOSE 3000
 
 # Set the default command to run when the container starts
-CMD [ "serve", "-s", "dist" ]
+CMD ["npx", "serve", "-s", "dist"]
