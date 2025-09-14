@@ -1,8 +1,8 @@
 {
   "name": "showcase_4_op_een_rij.client",
   "proxy": "http://localhost:5046",
-  "homepage": "/showcase",
-  "private": true,
+  "homepage": "/showcase/",
+    "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
