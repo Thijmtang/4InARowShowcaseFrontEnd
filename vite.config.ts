@@ -11,6 +11,6 @@ export default defineConfig({
     },
     host: true,
     strictPort: true,
-    port: Number(process.env.VITE_PORT),
+    port: process.env.VITE_PORT,
   },
 });
